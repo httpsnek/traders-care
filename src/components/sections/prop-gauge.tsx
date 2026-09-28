@@ -254,14 +254,17 @@ export function PropGauge({ percent, kind, readoutValue, format, caption, verdic
         <line x1={C - 1.2} y1={C - 0.6} x2={C + 1.2} y2={C + 0.6} stroke="#B08D57" strokeWidth="0.35" strokeLinecap="round" />
       </svg>
 
-      {/* Показания в центре */}
-      <div className="pointer-events-none absolute inset-[16.35%] flex flex-col items-center text-center [container-type:inline-size]" aria-hidden>
-        <span className="mt-[21%] text-[clamp(9px,3.3cqw,12px)] text-lp-muted">{account}</span>
-        <div className="mb-[18%] mt-auto flex flex-col items-center">
-          <span ref={numRef} className="font-display text-[14cqw] font-medium leading-none tracking-[-0.04em] text-lp-text tabular-nums">{initialText}</span>
-          {/* Блок показаний поднят (mb 18 %): подпись идёт над уровнем «0» и «100», вердикт — между ними */}
-          <span className="mt-[3%] max-w-[70%] text-balance text-[clamp(10px,3.6cqw,14px)] leading-tight text-lp-text-2">{caption}</span>
-          <span className={`mt-[5%] text-[clamp(9px,3.2cqw,13px)] font-semibold tracking-[0.06em] transition-colors duration-500 ${TONE_TEXT[kind]}`}>{verdict}</span>
+      {/* Показания в центре (в % блока показаний = круг 16,35–83,65 %). Сверху — счёт и подпись показания
+          (между «25» и «75» места хватает на любом размере); ось стрелки кончается на ~55 % → сумма с 56 %;
+          вердикт — между «0» и «100». */}
+      <div className="pointer-events-none absolute inset-[16.35%] text-center [container-type:size]" aria-hidden>
+        <div className="absolute inset-x-0 top-[20%] flex flex-col items-center gap-[1.4cqw]">
+          <span className="text-[max(9px,3.1cqw)] leading-none text-lp-muted">{account}</span>
+          <span className="max-w-[60%] text-balance text-[max(10px,3.5cqw)] leading-tight text-lp-text-2">{caption}</span>
+        </div>
+        <div className="absolute inset-x-0 top-[56%] flex flex-col items-center">
+          <span ref={numRef} className="font-display text-[12.5cqw] font-medium leading-none tracking-[-0.04em] text-lp-text tabular-nums">{initialText}</span>
+          <span className={`mt-[4.5cqw] text-[max(9px,3cqw)] font-semibold leading-none tracking-[0.06em] transition-colors duration-500 ${TONE_TEXT[kind]}`}>{verdict}</span>
         </div>
       </div>
     </div>

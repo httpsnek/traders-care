@@ -197,7 +197,10 @@ export function HeroLaptop({ t, children }: { t: Dictionary["hero"]["visual"]; c
       const ph = desk.matches ? DESK : MOB;
       const vmax = (MAX_FPS / (FRAMES - 1)) * ph.open; // доля пути в секунду при MAX_FPS кадрах видео
       const d = target - shown;
-      shown += Math.sign(d) * Math.min(Math.abs(d) * (1 - Math.exp(-dt / TAU)), vmax * dt);
+      // Ограничение нужно только там, где меняются кадры видео (крышка). В паузе и наезде кадр стоит —
+      // там догоняем в 4 раза быстрее, чтобы, например, возврат наверх не «проигрывал» пустые участки.
+      const cap = Math.min(shown, target) < ph.open ? vmax : vmax * 4;
+      shown += Math.sign(d) * Math.min(Math.abs(d) * (1 - Math.exp(-dt / TAU)), cap * dt);
       if (Math.abs(target - shown) < 0.0004) shown = target;
       apply(shown);
       if (shown !== target) loop = requestAnimationFrame(step); else running = false;

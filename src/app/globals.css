@@ -189,7 +189,7 @@ html[data-tt="sweep"]::view-transition-new(root) {
 @media (prefers-reduced-motion: reduce) { .btn-v, .btn-c, .btn-v svg { transition: none; } }
 
 /* Hero: метка отступления вырастает от линии факта к линии системы */
-.hero-mark { stroke-dasharray: 60; stroke-dashoffset: 60; animation: hero-mark 500ms var(--lp-ease) forwards; }
+.hero-mark { stroke-dasharray: 1; stroke-dashoffset: 1; animation: hero-mark 500ms var(--lp-ease) forwards; }
 @keyframes hero-mark { to { stroke-dashoffset: 0; } }
 @media (prefers-reduced-motion: reduce) { .hero-mark { animation: none; stroke-dashoffset: 0; } }
 

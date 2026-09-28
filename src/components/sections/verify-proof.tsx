@@ -136,6 +136,12 @@ export function VerifyProof({ t, locale }: { t: T; locale: Locale }) {
   }, [locale]);
 
   const dim = (i: number) => hot !== null && hot !== i;
+  // Без мыши (телефон, планшет) наведения нет — то же самое нажатием: тап включает подсветку поля, повторный выключает.
+  // Телефон при тапе ещё и имитирует наведение (mouseenter) — его игнорируем, иначе тап включает и сразу выключает.
+  const canHover = () => matchMedia("(hover: hover)").matches;
+  const tap = (i: number) => () => { if (canHover()) return; setHot((h) => (h === i ? null : i)); };
+  const enter = (i: number) => () => { if (canHover()) setHot(i); };
+  const leave = () => { if (canHover()) setHot(null); };
 
   return (
     <div className="grid gap-12 lg:grid-cols-12 lg:gap-6">
@@ -169,8 +175,8 @@ export function VerifyProof({ t, locale }: { t: T; locale: Locale }) {
           <div className="grid grid-cols-2 border-t border-lp-line sm:grid-cols-4 sm:divide-x sm:divide-lp-line">
             {cardValues.map((v, i) => (
               <div key={v.label} ref={(el) => { from.current[i] = el; }}
-                onMouseEnter={() => setHot(i)} onMouseLeave={() => setHot(null)}
-                className={`px-5 py-4 transition-opacity duration-200 sm:px-4 sm:first:pl-7 ${dim(i) ? "opacity-40" : ""}`}>
+                onMouseEnter={enter(i)} onMouseLeave={leave} onClick={tap(i)}
+                className={`cursor-pointer px-5 py-4 transition-[opacity,background-color] duration-200 sm:px-4 sm:first:pl-7 ${dim(i) ? "opacity-40" : ""} ${hot === i ? "bg-lp-accent/[0.06]" : ""}`}>
                 <div className="text-[12px] text-lp-muted">{v.label}</div>
                 <div className={`mt-1 font-mono text-[15px] tabular-nums ${i === 3 ? "text-lp-profit" : "text-lp-text"}`}>{v.value}</div>
               </div>
@@ -203,7 +209,7 @@ export function VerifyProof({ t, locale }: { t: T; locale: Locale }) {
                     const k = r === MATCH_ROW ? MATCH_COLS.indexOf(c) : -1;
                     return (
                       <div role="cell" key={c} ref={k >= 0 ? (el) => { to.current[k] = el; } : undefined}
-                        onMouseEnter={k >= 0 ? () => setHot(k) : undefined} onMouseLeave={k >= 0 ? () => setHot(null) : undefined}
+                        onMouseEnter={k >= 0 ? enter(k) : undefined} onMouseLeave={k >= 0 ? leave : undefined} onClick={k >= 0 ? tap(k) : undefined}
                         className={`relative truncate transition-opacity duration-200 ${PHONE_HIDDEN.includes(c) ? "max-sm:hidden" : ""} ${k >= 0 ? `text-lp-accent ${dim(k) ? "opacity-40" : ""}` : ""}`}>
                         {cell}
                       </div>

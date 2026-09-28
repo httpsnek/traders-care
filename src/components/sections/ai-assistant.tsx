@@ -54,13 +54,18 @@ function Answer({ text, active, onRef }: { text: string; active: number; onRef: 
 }
 
 /** График за дни [from, to): точки-сделки над базовой линией, месяцы подписаны HTML (чтобы шрифт не масштабировался). */
-function Field({ from, to, lit, months, className = "" }: { from: number; to: number; lit: Set<number>; months: string[]; className?: string }) {
-  const w = (to - from) * STEP;
+function Field({ from, to, lit, months, className = "", cols, title }: {
+  from: number; to: number; lit: Set<number>; months: string[]; className?: string;
+  cols?: number;    // ширина в днях: одинаковая у всех «этажей» → квадратики одного размера
+  title?: string;   // «этаж» одного месяца (телефон): подпись месяца сверху, без оси и полосы месяца
+}) {
+  const w = (cols ?? to - from) * STEP;
   return (
     <div className={className}>
+      {title && <div className="mb-2 text-[12px] font-medium uppercase tracking-[0.08em] text-lp-muted">{title}</div>}
       <svg viewBox={`0 0 ${w} ${H}`} className="block w-full" aria-hidden>
         {/* Август — едва заметной полосой: месяцы читаются без лишних линий */}
-        {MONTH_AT[1] < to && MONTH_AT[2] > from && (
+        {!title && MONTH_AT[1] < to && MONTH_AT[2] > from && (
           <rect x={(Math.max(MONTH_AT[1], from) - from) * STEP} y={0} width={(Math.min(MONTH_AT[2], to) - Math.max(MONTH_AT[1], from)) * STEP} height={H}
             rx={3} fill="rgb(var(--lp-text) / 0.03)" />
         )}
@@ -78,13 +83,16 @@ function Field({ from, to, lit, months, className = "" }: { from: number; to: nu
           );
         })}
       </svg>
-      <div className="relative mt-2 h-5 border-t border-lp-text/25 text-[12px] text-lp-muted">
-        {MONTH_AT.map((d, k) => (d >= from && d < to ? (
-          <span key={d} className="absolute top-1.5" style={{ left: `${((d - from) / (to - from)) * 100}%` }}>
-            <span className="absolute -top-[7px] left-0 h-[5px] w-px bg-lp-text/25" />{months[k]}
-          </span>
-        ) : null))}
-      </div>
+      {title && <div className="mt-1.5 h-px bg-lp-text/20" style={{ width: `${((to - from) / (cols ?? to - from)) * 100}%` }} />}
+      {!title && (
+        <div className="relative mt-2 h-5 border-t border-lp-text/25 text-[12px] text-lp-muted">
+          {MONTH_AT.map((d, k) => (d >= from && d < to ? (
+            <span key={d} className="absolute top-1.5" style={{ left: `${((d - from) / (to - from)) * 100}%` }}>
+              <span className="absolute -top-[7px] left-0 h-[5px] w-px bg-lp-text/25" />{months[k]}
+            </span>
+          ) : null))}
+        </div>
+      )}
     </div>
   );
 }
@@ -144,9 +152,13 @@ export function AiAssistant({ t }: { t: Dictionary["ai"] }) {
               {qa.notes[ref]}
             </div>
             <Field from={0} to={DAYS} lit={lit} months={t.months} className="hidden sm:block" />
+            {/* Телефон: три «этажа» — по месяцу на строку, одинаковый размер квадратиков (cols = самый длинный месяц) */}
             <div className="grid gap-5 sm:hidden">
-              <Field from={0} to={DAYS / 2} lit={lit} months={t.months} />
-              <Field from={DAYS / 2} to={DAYS} lit={lit} months={t.months} />
+              {MONTH_AT.map((d, k) => {
+                const end = MONTH_AT[k + 1] ?? DAYS;
+                const cols = Math.max(...MONTH_AT.map((m, j) => (MONTH_AT[j + 1] ?? DAYS) - m));
+                return <Field key={d} from={d} to={end} cols={cols} title={t.months[k]} lit={lit} months={t.months} />;
+              })}
             </div>
             <figcaption className="mt-4 flex flex-col gap-3 text-[13px] leading-relaxed text-lp-muted sm:flex-row sm:items-start sm:justify-between sm:gap-10">
               <span className="max-w-[80ch]">{t.source}</span>

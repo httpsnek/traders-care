@@ -56,7 +56,7 @@ export function LaptopScreen({ t, p, onReplay, compact = false }: { t: T; p: num
       {compact ? (
         // Телефон: экран после «наезда» ~360 px шириной — только главное, крупно.
         <div className="flex flex-col px-[40px] pb-[30px] pt-[30px]" style={{ height: SCREEN_H - NOTCH.h }}>
-          <div className="flex items-baseline justify-between text-[21px] text-lp-text/55">
+          <div className="flex items-baseline justify-between text-[21px] text-lp-text/66">
             <span className="font-medium text-lp-text/80">{t.period}</span>
             <span className="flex items-center gap-[8px] text-[18px]">{t.demo}
               <button type="button" tabIndex={-1} onClick={onReplay}
@@ -79,10 +79,10 @@ export function LaptopScreen({ t, p, onReplay, compact = false }: { t: T; p: num
               <path d={upto(RULES, p)} fill="none" stroke="rgb(var(--lp-accent))" strokeWidth="3" strokeDasharray="8 6" vectorEffect="non-scaling-stroke" />
               <path d={upto(FACT, p)} fill="none" stroke="rgb(var(--lp-text))" strokeWidth="3.5" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
               {OFF.filter((w) => w <= p).map((w) => (
-                <line key={w} x1={gx(w)} x2={gx(w)} y1={gy(FACT[w])} y2={gy(RULES[w])} stroke="rgb(var(--lp-loss))" strokeWidth="3.5" strokeLinecap="round" vectorEffect="non-scaling-stroke" className="hero-mark" />
+                <line key={w} x1={gx(w)} x2={gx(w)} y1={gy(FACT[w])} y2={gy(RULES[w])} stroke="rgb(var(--lp-loss))" strokeWidth="3.5" strokeLinecap="round" vectorEffect="non-scaling-stroke" pathLength={1} className="hero-mark" />
               ))}
             </svg>
-            <div className="mt-[10px] flex justify-between text-[17px] text-lp-text/45">{t.months.map((m) => <span key={m}>{m}</span>)}</div>
+            <div className="mt-[10px] flex justify-between text-[17px] text-lp-text/60">{t.months.map((m) => <span key={m}>{m}</span>)}</div>
           </div>
           <div className={`mt-[18px] grid grid-cols-2 gap-[24px] text-[19px] ${fade}`}>
             <div><div className="flex items-center gap-[8px] text-lp-text/70"><span className="h-[3px] w-[22px] bg-lp-text" />{t.fact}</div><div className="mt-[6px] font-display text-[34px] font-semibold text-lp-profit">{t.factValue}</div></div>
@@ -101,12 +101,12 @@ export function LaptopScreen({ t, p, onReplay, compact = false }: { t: T; p: num
           </div>
           <div className="mt-[16px] flex flex-col gap-[2px]">
             {s.nav.map((n, i) => (
-              <span key={n} className={`rounded-[5px] px-[6px] py-[5.5px] ${i === 0 ? "bg-lp-text/[0.07] text-lp-text" : "text-lp-text/55"}`}>{n}</span>
+              <span key={n} className={`rounded-[5px] px-[6px] py-[5.5px] ${i === 0 ? "bg-lp-text/[0.07] text-lp-text" : "text-lp-text/66"}`}>{n}</span>
             ))}
           </div>
           <div className="mt-auto rounded-[6px] border border-lp-line/80 px-[7px] py-[7px]">
             <div className="text-[8.5px] font-medium">{s.account}</div>
-            <div className="mt-[5px] flex items-center gap-[4px] text-[7.5px] text-lp-text/50"><span className="size-[4px] shrink-0 rounded-full bg-lp-profit" /><span className="truncate">{s.synced}</span></div>
+            <div className="mt-[5px] flex items-center gap-[4px] text-[7.5px] text-lp-text/62"><span className="size-[4px] shrink-0 rounded-full bg-lp-profit" /><span className="truncate">{s.synced}</span></div>
           </div>
         </div>
 
@@ -115,14 +115,14 @@ export function LaptopScreen({ t, p, onReplay, compact = false }: { t: T; p: num
           <div className="flex items-center justify-between">
             <span className="font-display text-[13px] font-semibold tracking-[-0.01em]">{t.period}</span>
             <span className="flex items-center gap-[8px]">
-              <span className="flex items-center gap-[4px] text-[8px] text-lp-text/45">{t.demo}
+              <span className="flex items-center gap-[4px] text-[8px] text-lp-text/60">{t.demo}
                 <button type="button" tabIndex={-1} onClick={onReplay}
                   className={`pointer-events-auto rounded-full transition-opacity hover:text-lp-text ${done ? "opacity-100" : "pointer-events-none opacity-0"}`}>
                   <RotateCcw size={9} />
                 </button>
               </span>
               <span className="flex rounded-[5px] border border-lp-line/80 p-[2px] text-[8px]">
-                {s.range.map((r, i) => <span key={r} className={`rounded-[3.5px] px-[6px] py-[3.5px] ${i === 1 ? "bg-lp-text/10 text-lp-text" : "text-lp-text/50"}`}>{r}</span>)}
+                {s.range.map((r, i) => <span key={r} className={`rounded-[3.5px] px-[6px] py-[3.5px] ${i === 1 ? "bg-lp-text/10 text-lp-text" : "text-lp-text/62"}`}>{r}</span>)}
               </span>
             </span>
           </div>
@@ -136,7 +136,7 @@ export function LaptopScreen({ t, p, onReplay, compact = false }: { t: T; p: num
               [s.adherence, s.adherenceValue, ""],
             ].map(([label, value, cls], i) => (
               <Card key={label} className={`px-[9px] py-[8px] ${i === 1 ? "border-lp-loss/40" : ""}`}>
-                <div className="text-[8px] text-lp-text/50">{label}</div>
+                <div className="text-[8px] text-lp-text/62">{label}</div>
                 <div className={`mt-[6px] font-display text-[17px] font-semibold tracking-[-0.02em] tabular-nums ${cls}`}>{value}</div>
               </Card>
             ))}
@@ -145,12 +145,12 @@ export function LaptopScreen({ t, p, onReplay, compact = false }: { t: T; p: num
           {/* График и разбор отступлений */}
           <div className="grid min-h-0 flex-1 grid-cols-[minmax(0,1fr)_178px] gap-[8px]">
             <Card className="flex min-w-0 flex-col px-[10px] pb-[7px] pt-[9px]">
-              <div className="flex items-center gap-[12px] text-[8px] text-lp-text/55">
+              <div className="flex items-center gap-[12px] text-[8px] text-lp-text/66">
                 <span className="flex items-center gap-[4px]"><span className="h-[1.5px] w-[12px] bg-lp-text" />{t.fact} <b className="font-semibold text-lp-profit">{t.factValue}</b></span>
                 <span className="flex items-center gap-[4px]"><span className="w-[12px] border-t-[1.5px] border-dashed border-lp-accent" />{t.rules} <b className="font-semibold text-lp-profit">{t.rulesValue}</b></span>
               </div>
               <div className="mt-[8px] flex min-h-0 flex-1 gap-[6px]">
-                <div className="flex flex-col justify-between py-[1px] text-right text-[7px] tabular-nums text-lp-text/35">
+                <div className="flex flex-col justify-between py-[1px] text-right text-[7px] tabular-nums text-lp-text/55">
                   {["$6k", "$4k", "$2k", "$0"].map((v) => <span key={v}>{v}</span>)}
                 </div>
                 <svg viewBox={`0 0 ${GW} ${GH}`} className="h-full min-w-0 flex-1 overflow-visible" preserveAspectRatio="none">
@@ -164,23 +164,23 @@ export function LaptopScreen({ t, p, onReplay, compact = false }: { t: T; p: num
                   <path d={upto(RULES, p)} fill="none" stroke="rgb(var(--lp-accent))" strokeWidth="1.4" strokeDasharray="4 3" vectorEffect="non-scaling-stroke" />
                   <path d={upto(FACT, p)} fill="none" stroke="rgb(var(--lp-text))" strokeWidth="1.7" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
                   {OFF.filter((w) => w <= p).map((w) => (
-                    <line key={w} x1={gx(w)} x2={gx(w)} y1={gy(FACT[w])} y2={gy(RULES[w])} stroke="rgb(var(--lp-loss))" strokeWidth="1.8" strokeLinecap="round" vectorEffect="non-scaling-stroke" className="hero-mark" />
+                    <line key={w} x1={gx(w)} x2={gx(w)} y1={gy(FACT[w])} y2={gy(RULES[w])} stroke="rgb(var(--lp-loss))" strokeWidth="1.8" strokeLinecap="round" vectorEffect="non-scaling-stroke" pathLength={1} className="hero-mark" />
                   ))}
                 </svg>
               </div>
-              <div className="ml-[22px] mt-[5px] flex justify-between text-[7px] text-lp-text/40">{t.months.map((m) => <span key={m}>{m}</span>)}</div>
+              <div className="ml-[22px] mt-[5px] flex justify-between text-[7px] text-lp-text/58">{t.months.map((m) => <span key={m}>{m}</span>)}</div>
             </Card>
 
             <Card className="flex flex-col px-[10px] py-[9px]">
               <div className="flex items-baseline justify-between">
                 <span className="text-[9px] font-semibold">{s.offTitle}</span>
-                <span className="text-[8px] tabular-nums text-lp-text/50">14</span>
+                <span className="text-[8px] tabular-nums text-lp-text/62">14</span>
               </div>
               <ul className="mt-[12px] flex flex-col gap-[15px]">
                 {s.off.map(([name, n, sum]) => (
                   <li key={name}>
                     <div className="flex items-baseline justify-between gap-[6px] text-[8px]">
-                      <span className="truncate text-lp-text/75">{name} <span className="text-lp-text/40">×{n}</span></span>
+                      <span className="truncate text-lp-text/75">{name} <span className="text-lp-text/58">×{n}</span></span>
                       <span className="shrink-0 font-medium tabular-nums text-lp-loss">{sum}</span>
                     </div>
                     <div className="mt-[5px] h-[4px] rounded-full bg-lp-text/[0.06]">
@@ -197,7 +197,7 @@ export function LaptopScreen({ t, p, onReplay, compact = false }: { t: T; p: num
                     <span key={w} className={`h-[11px] flex-1 rounded-[2px] transition-colors duration-300 ${w > p ? "bg-lp-text/[0.06]" : OFF.includes(w) ? "bg-lp-loss/80" : "bg-lp-profit/55"}`} />
                   ))}
                 </div>
-                <div className={`mt-[6px] text-[8px] text-lp-text/55 ${fade}`}>{t.gapCaption}</div>
+                <div className={`mt-[6px] text-[8px] text-lp-text/66 ${fade}`}>{t.gapCaption}</div>
               </div>
             </Card>
           </div>
@@ -210,8 +210,8 @@ export function LaptopScreen({ t, p, onReplay, compact = false }: { t: T; p: num
                 {s.last.map(([sym, side, r, pnl, tag]) => (
                   <tr key={sym} className="border-t border-lp-line/60 first:border-t-0">
                     <td className="py-[5px] font-medium">{sym}</td>
-                    <td className="text-lp-text/55">{side}</td>
-                    <td className="text-lp-text/55">{r}</td>
+                    <td className="text-lp-text/66">{side}</td>
+                    <td className="text-lp-text/66">{r}</td>
                     <td className="text-right">{tag && <span className="rounded-[3px] bg-lp-loss/12 px-[5px] py-[2px] text-[7.5px] text-lp-loss">{tag}</span>}</td>
                     <td className={`w-[56px] text-right font-medium ${pnl.startsWith("+") ? "text-lp-profit" : "text-lp-loss"}`}>{pnl}</td>
                   </tr>
