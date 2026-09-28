@@ -31,19 +31,30 @@ export const BREACHED = PATHS.filter((p) => p.hit).length;
 
 const W = 560, H = 300;
 
+// Анимация каждого графика проигрывается один раз за визит: графики пересоздаются при переключении калькулятора,
+// поэтому «уже проиграно» хранится вне компонента. Возвращает прогресс 0..1 (при reduced motion — сразу 1).
+const PLAYED = new Set<string>();
+function useOnce(key: string, ref: React.RefObject<Element | null>, duration: number, ease: [number, number, number, number] = [0.16, 1, 0.3, 1]) {
+  const seen = useInView(ref, { once: true, amount: 0.4 });
+  const [k, setK] = useState(() => (PLAYED.has(key) ? 1 : 0));
+  useEffect(() => {
+    if (PLAYED.has(key)) { setK(1); return; }
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) { PLAYED.add(key); setK(1); return; }
+    if (!seen) return;
+    PLAYED.add(key);
+    const c = animate(0, 1, { duration, ease, onUpdate: setK });
+    return () => c.stop();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [seen, key]);
+  return k;
+}
+
 function Scenarios({ t }: { t: T }) {
   const PL = 8, PR = 8, PT = 16, PB = 26;
   // Прорисовка: k — сколько сделок уже нарисовано (0..N). Масштаб по вертикали считается по видимой части
   // и плавно отдаляется по мере роста/падения линий; пол просадки всегда в кадре.
   const ref = useRef<SVGSVGElement>(null);
-  const seen = useInView(ref, { once: true, amount: 0.4 });
-  const [k, setK] = useState(N);
-  useEffect(() => {
-    if (!seen) { if (!matchMedia("(prefers-reduced-motion: reduce)").matches) setK(0); return; }
-    if (matchMedia("(prefers-reduced-motion: reduce)").matches) { setK(N); return; }
-    const c = animate(0, N, { duration: 2.6, ease: [0.33, 0, 0.2, 1], onUpdate: setK });
-    return () => c.stop();
-  }, [seen]);
+  const k = useOnce("scenarios", ref, 2.6, [0.33, 0, 0.2, 1]) * N;
   const upto = (pts: number[]) => pts.slice(0, Math.floor(k) + 1);
   const vis = PATHS.flatMap((p) => upto(p.pts));
   const lo = FLOOR - 2, hi = Math.max(4, ...vis) + 2;
@@ -84,21 +95,26 @@ function Consistency({ t }: { t: T }) {
   const lo = Math.min(...DAYS) - 100, hi = LIMIT + 250;
   const y = (v: number) => +(PT + (1 - (v - lo) / (hi - lo)) * (H - PT - PB)).toFixed(2);
   const step = (W - PL - PR) / DAYS.length, bw = step * 0.56;
+  // Появление: столбики растут от нуля по очереди, лимит проводится слева направо, подпись лучшего дня — в конце.
+  const ref = useRef<SVGSVGElement>(null);
+  const k = useOnce("consistency", ref, 1.8, [0.4, 0, 0.2, 1]);
+  const grow = (i: number) => Math.min(1, Math.max(0, (k * (DAYS.length + 6) - i) / 6));
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label={t.consistency.aria}>
+    <svg ref={ref} viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label={t.consistency.aria}>
       <line x1={PL} x2={W - PR} y1={y(0)} y2={y(0)} stroke="rgb(var(--lp-line))" />
-      <line x1={PL} x2={W - PR} y1={y(LIMIT)} y2={y(LIMIT)} stroke="rgb(var(--lp-accent))" strokeDasharray="4 4" />
-      <text x={W - PR} y={y(LIMIT) - 7} fontSize="11" textAnchor="end" fill="rgb(var(--lp-accent))">{t.consistency.limit}</text>
+      <line x1={PL} x2={PL + (W - PR - PL) * Math.min(1, k * 1.6)} y1={y(LIMIT)} y2={y(LIMIT)} stroke="rgb(var(--lp-accent))" strokeDasharray="4 4" />
+      <text opacity={Math.min(1, Math.max(0, k * 3 - 1.5))} x={W - PR} y={y(LIMIT) - 7} fontSize="11" textAnchor="end" fill="rgb(var(--lp-accent))">{t.consistency.limit}</text>
       {DAYS.map((v, i) => {
         const x = PL + i * step + (step - bw) / 2;
         const best = v === BEST;
+        const g = grow(i), vy = y(0) + (y(v) - y(0)) * g;
         return (
-          <rect key={i} x={+x.toFixed(2)} width={+bw.toFixed(2)} y={Math.min(y(v), y(0))} height={Math.max(1.5, Math.abs(y(v) - y(0)))} rx="2"
+          <rect key={i} x={+x.toFixed(2)} width={+bw.toFixed(2)} y={+Math.min(vy, y(0)).toFixed(2)} height={+Math.max(g ? 1.5 : 0, Math.abs(vy - y(0))).toFixed(2)} rx="2"
             fill={v < 0 ? "rgb(var(--lp-loss) / 0.75)" : best ? "rgb(var(--lp-profit))" : "rgb(var(--lp-profit) / 0.45)"}
             stroke={best ? "rgb(var(--lp-accent))" : "none"} strokeWidth="1.5" />
         );
       })}
-      <text x={PL + DAYS.indexOf(BEST) * step + step / 2} y={y(BEST) - 8} fontSize="11" textAnchor="middle" fill="rgb(var(--lp-text))">{t.consistency.best}</text>
+      <text opacity={Math.min(1, Math.max(0, (k - 0.8) * 5))} x={PL + DAYS.indexOf(BEST) * step + step / 2} y={y(BEST) - 8} fontSize="11" textAnchor="middle" fill="rgb(var(--lp-text))">{t.consistency.best}</text>
     </svg>
   );
 }
@@ -110,8 +126,10 @@ const ENTRY_P = 1.0842, PIP = 0.0001, MIN_P = 5, MAX_P = 60;
 
 function Position({ t, pips, setPips, fmt }: { t: T; pips: number; setPips: (n: number) => void; fmt: (n: number) => string }) {
   const entryY = 70, pxPerPip = 3.2;
-  const stopY = entryY + pips * pxPerPip;
   const svg = useRef<SVGSVGElement>(null);
+  // Появление: линия стопа «оттягивается» от входа до своего места, зона риска раскрывается вслед.
+  const k = useOnce("position", svg, 1.1);
+  const stopY = entryY + pips * pxPerPip * k;
   const drag = useRef(false);
   const toPips = (clientY: number) => {
     const el = svg.current; if (!el) return pips;
