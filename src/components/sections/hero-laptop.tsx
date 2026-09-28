@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { Dictionary } from "@/i18n";
 import { toQuad } from "@/lib/homography";
-import { LaptopScreen, SCREEN_H, SCREEN_W, WEEKS } from "./laptop-screen";
+import { LaptopScreen, NOTCH, SCREEN_H, SCREEN_W, WEEKS } from "./laptop-screen";
 
 // VID-01: крышка ноутбука открывается по мере прокрутки. Кадры — public/media/hero/lid/000..143.webp (1920×1080)
 // и lid-m/ (1120×630, для телефона), нарезка — tools/process_vid01.py. Когда крышка встала, на экране
@@ -272,6 +272,9 @@ export function HeroLaptop({ t, children }: { t: Dictionary["hero"]["visual"]; c
                     кольцом (ширина рамки ~13 px кадра = 13 ед. экрана), как у настоящего чёрного безеля. */}
                 <div className={`relative size-full rounded-t-[6px] transition-opacity ease-out [[data-theme=light]_&]:shadow-[0_0_0_13px_#070708] ${on ? "opacity-100 duration-700" : "opacity-0 duration-300"}`}>
                   <LaptopScreen t={t} p={p} onReplay={play} compact={compact} />
+                  {/* Чёлка поверх экрана с заходом в рамку: внутри экрана её верхний край обрезается по скруглённому
+                      краю, и в субпиксельный просвет проглядывала строка меню (светлая полоска). */}
+                  <span className="pointer-events-none absolute rounded-b-[5px] bg-black [[data-theme=light]_&]:bg-[#070708]" style={{ left: NOTCH.x, width: NOTCH.w, top: -3, height: NOTCH.h + 3 }} />
                   {/* Блик студийного света на стекле — только в тёмной теме: на светлом интерфейсе он выглядит как засветка */}
                   <div className="pointer-events-none absolute inset-0 rounded-t-[6px] bg-[radial-gradient(70%_45%_at_50%_0%,rgb(255_255_255/0.06),transparent_70%)] [[data-theme=light]_&]:hidden" />
                 </div>
