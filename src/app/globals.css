@@ -194,7 +194,10 @@ html[data-tt="sweep"]::view-transition-new(root) {
 @media (prefers-reduced-motion: reduce) { .hero-mark { animation: none; stroke-dashoffset: 0; } }
 
 /* Термопечать чека: точки слегка «растекаются», плотность строк немного гуляет */
-.thermal { filter: blur(0.18px) contrast(1.05); }
+.thermal { filter: contrast(1.05); }
+/* «Растекание» термопечати — только на широких экранах. На телефоне повёрнутый слой с filter: blur после
+   анимации растрируется в низком разрешении, и весь текст чека мылится. */
+@media (min-width: 1024px) and (min-resolution: 1.5dppx) { .thermal { filter: blur(0.18px) contrast(1.05); } }
 .thermal .receipt-line:nth-child(3n) { --tp: .86; }
 .thermal .receipt-line:nth-child(5n+1) { --tp: .93; }
 .receipt.thermal[data-printed] .receipt-line { opacity: var(--tp, 1); }
