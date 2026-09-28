@@ -67,15 +67,15 @@ export function HowItWorks({ t, locale }: { t: Dictionary["how"]; locale: Locale
         <h2 id="how-title" className="max-w-[640px] text-lp-h2 text-lp-text">{t.title}</h2>
 
         {/* Ряд 1 — шаги. На десктопе соединены линией на уровне номеров, на мобильном — вертикальной слева. */}
-        <ol ref={stepsRef} className="relative mt-12 grid gap-10 border-l border-lp-line pl-6 md:grid-cols-3 md:gap-6 md:border-l-0 md:pl-0 lg:mt-16">
+        <ol ref={stepsRef} className="relative mt-9 grid gap-8 border-l border-lp-line pl-5 md:mt-12 md:grid-cols-3 md:gap-6 md:border-l-0 md:pl-0 lg:mt-16">
           <span aria-hidden className="absolute inset-x-0 top-[28px] hidden h-px bg-lp-line md:block" />
           {t.steps.map((s, i) => (
             <li key={i} className="relative flex flex-col">
-              <span className="relative inline-flex w-fit bg-lp-ground pr-5 font-display text-[56px] font-medium leading-none tracking-[-0.04em] text-lp-muted tabular-nums">{i + 1}</span>
-              <h3 className="mt-6 text-lp-h3 text-lp-text">{s.title}</h3>
+              <span className="relative inline-flex w-fit bg-lp-ground pr-5 font-display text-[34px] font-medium leading-none md:text-[56px] tracking-[-0.04em] text-lp-muted tabular-nums">{i + 1}</span>
+              <h3 className="mt-3 text-lp-h3 text-lp-text md:mt-6">{s.title}</h3>
               <p className="mt-2 max-w-[36ch] text-lp-body text-lp-text-2">{s.text}</p>
 
-              <div aria-hidden className="mt-6 rounded-screen border border-lp-line bg-lp-raised p-4 text-[13px]">
+              <div aria-hidden className="mt-4 rounded-screen border border-lp-line bg-lp-raised p-4 text-[13px] md:mt-6">
                 {i === 0 && (
                   <div className="grid gap-2">
                     {[[t.form.server, "Broker-Live 07"], [t.form.login, "5102 3381"], [t.form.password, "••••••••••"]].map(([k, v]) => (
@@ -114,13 +114,13 @@ export function HowItWorks({ t, locale }: { t: Dictionary["how"]; locale: Locale
         </ol>
 
         {/* Ряд 2 — чек и сумма */}
-        <div className="mt-14 grid items-center gap-8 lg:mt-20 lg:grid-cols-12 lg:gap-6">
+        <div className="mt-10 grid items-center gap-6 md:mt-14 lg:mt-20 lg:grid-cols-12 lg:gap-6">
           <figure className="-mx-5 overflow-hidden md:mx-0 lg:order-2 lg:col-span-6 lg:col-start-7" aria-label={t.receipt.aria}>
-            {/* На узком экране картинка шире колонки: бумага крупнее, пустые поля по бокам уходят за край. */}
-            <div className="mx-auto w-[150%] max-w-none -translate-x-[14%] [container-type:inline-size] md:w-full md:max-w-[560px] md:translate-x-0">
+            {/* На узком экране картинка чуть шире колонки: пустые поля по бокам уходят за край, чек не на весь экран. */}
+            <div className="mx-auto w-[118%] max-w-none -translate-x-[8%] [container-type:inline-size] md:w-full md:max-w-[560px] md:translate-x-0">
               <div ref={paperRef} className="relative aspect-[1040/1380] [mask-composite:intersect] [mask-image:linear-gradient(to_right,transparent,#000_6%,#000_94%,transparent),linear-gradient(to_bottom,transparent,#000_5%,#000_92%,transparent)]">
-                <Image src="/media/how/img-04-dark.webp" alt="" fill unoptimized sizes="(min-width: 768px) 560px, 150vw" className="object-cover [[data-theme=light]_&]:hidden" />
-                <Image src="/media/how/img-04-light.webp" alt="" fill unoptimized sizes="(min-width: 768px) 560px, 150vw" className="hidden object-cover [[data-theme=light]_&]:block" />
+                <Image src="/media/how/img-04-dark.webp" alt="" fill unoptimized sizes="(min-width: 768px) 560px, 118vw" className="object-cover [[data-theme=light]_&]:hidden" />
+                <Image src="/media/how/img-04-light.webp" alt="" fill unoptimized sizes="(min-width: 768px) 560px, 118vw" className="hidden object-cover [[data-theme=light]_&]:block" />
 
                 {/* Печать: цвет задан бумагой, а не темой — чек белый в обеих темах. */}
                 {/* Термопечать: только чёрная краска, заглавные, узкий моноширинный, точечные лидеры, итог двойной высоты.
@@ -170,7 +170,7 @@ export function HowItWorks({ t, locale }: { t: Dictionary["how"]; locale: Locale
             <p className="mt-3 font-display text-[clamp(56px,8vw,112px)] font-medium leading-[0.95] tracking-[-0.045em] text-lp-loss tabular-nums">
               <span ref={sumRef}>{usd(TOTAL)}</span>
             </p>
-            <p className="mt-6 max-w-[46ch] text-lp-lead text-lp-text-2">{t.costText}</p>
+            <p className="mt-4 max-w-[46ch] text-lp-lead text-lp-text-2 md:mt-6">{t.costText}</p>
             <p className="mt-6 text-lp-small text-lp-muted">{t.demo}</p>
           </div>
         </div>

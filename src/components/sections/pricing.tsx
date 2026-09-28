@@ -36,16 +36,17 @@ export function Pricing({ t }: { t: Dictionary["pricing"] }) {
 
         {/* 2. Тарифы: карта (лицо — название и цена, по клику переворачивается — там характеристики гравировкой)
             + под картой «паспорт» тарифа: крупные значения вместо строк таблицы, строки выровнены по всем колонкам. */}
-        <div className="mt-14 grid gap-x-6 gap-y-16 sm:grid-cols-2 lg:mt-14 lg:grid-cols-4">
+        {/* Телефон: карусель со свайпом — карта 84 % ширины, край следующей виден; с sm — сетка. */}
+        <div className="-mx-5 mt-10 flex snap-x snap-mandatory scroll-px-5 gap-4 overflow-x-auto px-5 pb-2 [scrollbar-width:none] sm:mx-0 sm:mt-14 sm:grid sm:snap-none sm:grid-cols-2 sm:gap-x-6 sm:gap-y-16 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-4 [&::-webkit-scrollbar]:hidden">
           {t.plans.map((p, i) => {
             const rec = i === REC;
             const specs: [string, string][] = [[t.rowLabels[0], p.accounts], [t.rowLabels[1], p.sync], [t.rowLabels[2], p.ai], [t.rowLabels[3], p.tokens]];
             return (
-              <div key={p.name} className="flex flex-col">
+              <div key={p.name} className="flex w-[84%] shrink-0 snap-start flex-col sm:w-auto">
                 <div className="mb-3 h-5 text-[13px] font-medium text-lp-accent">{rec ? t.recommended : ""}</div>
                 <PlanCard material={PLAN_CARD[i]} name={p.name} price={p.price} perMonth={t.perMonth} specs={specs}
-                  flip={t.flip} flipBack={t.flipBack} sizes="(min-width: 1024px) 300px, (min-width: 640px) 45vw, 90vw" />
-                <p className="mt-5 min-h-[2.6em] text-[15px] leading-snug text-lp-text">{p.note}</p>
+                  flip={t.flip} flipBack={t.flipBack} sizes="(min-width: 1024px) 300px, (min-width: 640px) 45vw, 84vw" />
+                <p className="mt-4 min-h-[2.6em] text-[15px] sm:mt-5 leading-snug text-lp-text">{p.note}</p>
 
                 <dl className="mb-7 mt-5 border-t border-lp-line">
                   <div className="grid grid-cols-[1fr_auto] items-baseline border-b border-lp-line py-3">

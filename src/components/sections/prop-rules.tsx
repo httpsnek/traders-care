@@ -85,10 +85,10 @@ export function PropRules({ t, locale }: { t: Dictionary["prop"]; locale: Locale
                       <span className={`text-[15px] font-medium ${on ? "text-lp-text" : "text-lp-text-2 group-hover:text-lp-text"}`}>{t.rules[i].name}</span>
                       <span className={`text-[12px] font-semibold tracking-[0.06em] ${toneText[r.kind]}`}>{verdict(r)}</span>
                       <span className="col-span-2 flex items-center gap-3">
-                        <span className="relative h-[3px] flex-1 overflow-hidden rounded-full bg-lp-text/10">
+                        <span className="relative h-[3px] min-w-[48px] flex-1 overflow-hidden rounded-full bg-lp-text/10">
                           <span className={`absolute inset-y-0 left-0 rounded-full ${toneBar[r.kind]}`} style={{ width: `${r.percent}%` }} />
                         </span>
-                        <span className="w-[46%] text-right text-[13px] text-lp-muted">{t.rules[i].value}</span>
+                        <span className="shrink-0 whitespace-nowrap text-right text-[13px] tabular-nums text-lp-muted lg:w-[46%] lg:whitespace-normal">{t.rules[i].value}</span>
                       </span>
                     </button>
                   </li>

@@ -1,3 +1,4 @@
+import { Check, X } from "lucide-react";
 import Image from "next/image";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n";
@@ -88,21 +89,35 @@ export function Verify({ t, locale }: { t: Dictionary["verify"]; locale: Locale 
           </div>
         </figure>
 
-        {/* Схема — мобильный и планшет: сверху вниз */}
-        <figure aria-label={d.aria} className="mt-12 lg:hidden">
-          <div className="font-display text-[20px] font-medium text-lp-text">{d.broker}</div>
-          <div className="mt-1 text-[12px] text-lp-muted">{d.brokerSub}</div>
-          <div className="ml-[5px] mt-3 h-8 w-[1.5px] bg-lp-accent" />
-          <div className={`relative -mx-5 aspect-[1660/820] ${fade}`}>{keyImg}</div>
-          <div className="text-[15px] font-medium text-lp-text">{d.key} <span className="font-normal text-lp-muted">· {d.keySub}</span></div>
-          <div className="mt-2 flex flex-wrap gap-x-5 gap-y-1">{blocked.map((b) => <span key={b}>{struck(b)}</span>)}</div>
-          <div className="ml-[5px] mt-4 h-8 w-[1.5px] bg-lp-accent" />
-          <div className="flex items-center gap-3">
-            <span className="size-[9px] rounded-full bg-lp-accent" />
-            <span className="font-display text-[20px] font-medium text-lp-text">{d.app}</span>
+        {/* Мобильный и планшет: вместо схемы с ключом — карточка прав доступа, как экран разрешений.
+            Что Traders Care может сделать со счётом и чего не может — читается за секунду. */}
+        <figure aria-label={d.aria} className="mt-9 overflow-hidden rounded-screen border border-lp-line bg-lp-raised lg:hidden">
+          <div className="flex items-center gap-3 border-b border-lp-line px-4 py-4">
+            <span className="min-w-0">
+              <span className="block font-display text-[17px] font-medium text-lp-text">{d.broker}</span>
+              <span className="block text-[12px] leading-snug text-lp-muted">MetaTrader · cTrader · Match-Trader · DXtrade</span>
+            </span>
+            <span aria-hidden className="relative mx-1 h-px min-w-[24px] flex-1 bg-lp-accent after:absolute after:-right-px after:-top-[3.5px] after:size-2 after:rotate-45 after:border-r after:border-t after:border-lp-accent" />
+            <span className="shrink-0 font-display text-[17px] font-medium text-lp-text">{d.app}</span>
           </div>
-          <div className="ml-[4px] mt-3 flex flex-col gap-2 border-l border-lp-text/35 pl-4 text-lp-small text-lp-text-2">
-            <span>{d.journal}</span><span>{d.card}</span>
+          <ul className="divide-y divide-lp-line">
+            <li className="flex items-start gap-3 px-4 py-3.5">
+              <Check aria-hidden size={18} strokeWidth={2.2} className="mt-0.5 shrink-0 text-lp-accent" />
+              <span>
+                <span className="block text-[15px] text-lp-text">{d.read}</span>
+                <span className="mt-0.5 block text-[13px] text-lp-muted">{d.journal} · {d.card}</span>
+              </span>
+            </li>
+            {blocked.map((b) => (
+              <li key={b} className="flex items-center gap-3 px-4 py-3.5">
+                <X aria-hidden size={18} strokeWidth={2.2} className="shrink-0 text-lp-muted" />
+                <span className="text-[15px] text-lp-muted line-through decoration-lp-text/40">{b}</span>
+                <span className="ml-auto text-[12px] text-lp-muted">{d.blocked}</span>
+              </li>
+            ))}
+          </ul>
+          <div className="border-t border-lp-line bg-lp-text/[0.02] px-4 py-3 text-[13px] text-lp-text-2">
+            <span className="font-medium text-lp-text">{d.key}</span> · {d.keySub}
           </div>
         </figure>
 

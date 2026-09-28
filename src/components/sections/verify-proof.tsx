@@ -62,7 +62,9 @@ function Chart({ t, f }: { t: T; f: ReturnType<typeof makeFormat> }) {
 // Выписка MT5: заголовки — как в настоящем отчёте (англ.), средняя строка — наша сделка.
 const COLS = ["Ticket", "Open time", "Type", "Volume", "Symbol", "Price", "Close time", "Price", "Profit"];
 // На десктопе таблица целиком помещается в колонку (без прокрутки) — иначе соединители упираются в пустоту.
-const GRID = "grid grid-cols-[1.05fr_1.2fr_0.6fr_0.75fr_0.9fr_1fr_1.2fr_1fr_0.95fr] gap-x-3 lg:gap-x-2 xl:gap-x-3";
+const GRID = "grid grid-cols-[0.75fr_0.9fr_1fr_1fr_0.95fr] gap-x-2 sm:grid-cols-[1.05fr_1.2fr_0.6fr_0.75fr_0.9fr_1fr_1.2fr_1fr_0.95fr] sm:gap-x-3 lg:gap-x-2 xl:gap-x-3";
+// На телефоне — только колонки, которые сверяются с карточкой (+ символ): без горизонтальной прокрутки.
+const PHONE_HIDDEN = [0, 1, 2, 6];
 const ROWS = [
   ["48213855", "12.09 09:14", "sell", "1.00", "EURUSD", "1.07412", "12.09 09:51", "1.07385", "270.00"],
   ["48213907", "12.09 10:42", "buy", "0.50", "XAUUSD", "4031.40", "12.09 13:18", "4047.90", "825.00"],
@@ -176,10 +178,10 @@ export function VerifyProof({ t, locale }: { t: T; locale: Locale }) {
 
         {/* Выписка брокера */}
         <div className="mt-8 lg:mt-14">
-          <div className="-mx-5 overflow-x-auto px-5 sm:mx-0 sm:px-0">
-            <div ref={table} role="table" aria-label={t.statement} className="min-w-[760px] border-y border-lp-line font-mono text-[12.5px] tabular-nums lg:min-w-0 lg:text-[11.5px] xl:text-[12.5px]">
+          <div className="sm:-mx-5 sm:overflow-x-auto sm:px-5 md:mx-0 md:px-0">
+            <div ref={table} role="table" aria-label={t.statement} className="border-y border-lp-line font-mono text-[11.5px] tabular-nums sm:min-w-[760px] sm:text-[12.5px] lg:min-w-0 lg:text-[11.5px] xl:text-[12.5px]">
               <div role="row" className={`${GRID} border-b border-lp-line py-2.5 text-lp-muted`}>
-                {COLS.map((c, i) => <span role="columnheader" key={i}>{c}</span>)}
+                {COLS.map((c, i) => <span role="columnheader" key={i} className={PHONE_HIDDEN.includes(i) ? "max-sm:hidden" : ""}>{c}</span>)}
               </div>
               {ROWS.map((row, r) => (
                 <div role="row" key={row[0]} className={`${GRID} py-2.5 ${r === MATCH_ROW ? "bg-lp-accent/[0.06] text-lp-text" : "text-lp-muted/70"}`}>
@@ -188,7 +190,7 @@ export function VerifyProof({ t, locale }: { t: T; locale: Locale }) {
                     return (
                       <div role="cell" key={c} ref={k >= 0 ? (el) => { to.current[k] = el; } : undefined}
                         onMouseEnter={k >= 0 ? () => setHot(k) : undefined} onMouseLeave={k >= 0 ? () => setHot(null) : undefined}
-                        className={`relative transition-opacity duration-200 ${k >= 0 ? `text-lp-accent ${dim(k) ? "opacity-40" : ""}` : ""}`}>
+                        className={`relative truncate transition-opacity duration-200 ${PHONE_HIDDEN.includes(c) ? "max-sm:hidden" : ""} ${k >= 0 ? `text-lp-accent ${dim(k) ? "opacity-40" : ""}` : ""}`}>
                         {cell}
                       </div>
                     );

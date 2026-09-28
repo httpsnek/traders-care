@@ -33,9 +33,10 @@ export function DrawdownTypes({ t }: { t: Dictionary["prop"]["drawdown"] }) {
       <h3 className="text-lp-h3 text-lp-text">{t.title}</h3>
       <p className="mt-3 max-w-[58ch] text-lp-body text-lp-text-2">{t.lead}</p>
 
-      <div className="-mx-5 mt-8 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-2 md:mx-0 md:grid md:grid-cols-3 md:overflow-visible md:px-0 md:pb-0">
+      {/* Телефон: три строки «график слева, описание справа» — все три видны сразу, без горизонтальной прокрутки */}
+      <div className="mt-7 grid gap-5 md:mt-8 md:grid-cols-3 md:gap-4">
         {kinds.map((k, i) => (
-          <figure key={k} className="w-[78%] shrink-0 snap-start md:w-auto">
+          <figure key={k} className="grid grid-cols-[44%_1fr] items-center gap-4 md:block">
             <svg viewBox={`0 0 ${W} ${H}`} className="w-full overflow-visible" role="img" aria-label={`${t.types[i].name}: ${t.types[i].text}`}>
               {/* дни для EOD */}
               {k === "eod" && EQ.map((_, j) => j > 0 && j % DAY === 0 ? (
@@ -47,7 +48,7 @@ export function DrawdownTypes({ t }: { t: Dictionary["prop"]["drawdown"] }) {
               <path d={stepPath(floors[k])} fill="none" stroke="rgb(var(--lp-accent))" strokeWidth="1.6" strokeDasharray="4 3" />
               <path d={linePath(EQ)} fill="none" stroke="rgb(var(--lp-text))" strokeWidth="1.6" strokeLinejoin="round" />
             </svg>
-            <figcaption className="mt-3">
+            <figcaption className="md:mt-3">
               <div className="font-display text-[17px] font-semibold text-lp-text">{t.types[i].name}</div>
               <p className="mt-1 text-lp-small text-lp-text-2">{t.types[i].text}</p>
             </figcaption>
