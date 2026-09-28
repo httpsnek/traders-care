@@ -1,0 +1,12 @@
+node_modules/
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
+.DS_Store
+tools/node_modules/
+assets/raw/
+
+# Скриншоты исследования конкурентов — тяжёлые (~65 МБ), только для внутренней работы
+docs/research/screens/
+__pycache__/

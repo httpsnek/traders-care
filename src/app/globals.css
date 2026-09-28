@@ -1,0 +1,205 @@
+@import "../styles/tokens.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-padding-top: calc(var(--lp-header-h) + 16px);
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-lp-ground font-sans text-lp-body text-lp-text antialiased;
+    font-variant-numeric: tabular-nums;
+  }
+  h1, h2, h3 {
+    @apply font-display font-semibold;
+    text-wrap: balance;
+  }
+  :focus-visible {
+    outline: 2px solid rgb(var(--lp-accent));
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+  ::selection {
+    background: rgb(var(--lp-accent) / 0.35);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Первый экран: график рисуется, подписи проявляются. --d — задержка. */
+@layer components {
+  .hero-draw {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: hero-draw 1100ms var(--lp-ease) var(--d, 0ms) forwards;
+  }
+  .hero-fade {
+    opacity: 0;
+    animation: hero-fade 600ms var(--lp-ease) var(--d, 0ms) forwards;
+  }
+}
+@keyframes hero-draw { to { stroke-dashoffset: 0; } }
+@keyframes hero-fade { to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .hero-draw, .hero-fade { animation: none; opacity: 1; stroke-dashoffset: 0; }
+}
+
+/* Смена темы — «полоса света» (src/lib/theme-transition.ts двигает mask-position).
+   Стандартный кросс-фейд браузера отключён; новая тема лежит поверх старой и открывается маской
+   с растушёвкой 20 % (от 40 % до 60 % градиента). */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-new(root) { z-index: 2; }
+html[data-tt="sweep"]::view-transition-new(root) {
+  mask-image: linear-gradient(115deg, #000 40%, transparent 60%);
+  -webkit-mask-image: linear-gradient(115deg, #000 40%, transparent 60%);
+  mask-size: 300% 300%; -webkit-mask-size: 300% 300%;
+  mask-repeat: no-repeat; -webkit-mask-repeat: no-repeat;
+  mask-position: 100% 100%; -webkit-mask-position: 100% 100%;
+}
+/* На время смены темы — никаких собственных transition, иначе элементы перекрашиваются вразнобой. */
+.theme-switching,
+.theme-switching *,
+.theme-switching *::before,
+.theme-switching *::after {
+  transition: none !important;
+}
+
+/* Экран телефона: смена правила */
+@layer components {
+  .phone-swap { animation: phone-swap 420ms var(--lp-ease) both; }
+}
+@keyframes phone-swap { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+/* Чек (блок «Как это работает»): строки «печатаются» сверху вниз, каждая со своей задержкой --d. */
+.receipt-line {
+  opacity: 0;
+  clip-path: inset(0 0 100% 0);
+  transform: translateY(-0.35em);
+  transition: opacity 260ms linear var(--d, 0ms), clip-path 260ms var(--lp-ease) var(--d, 0ms), transform 320ms var(--lp-ease) var(--d, 0ms);
+}
+.receipt[data-printed] .receipt-line { opacity: 1; clip-path: inset(0); transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .receipt-line { opacity: 1; clip-path: none; transform: none; transition: none; }
+}
+
+/* ── Тестовые кнопки (страница /lab). Металл — фактура с наших карт IMG-07, фаска и нажатие — CSS. ── */
+.btn-m {
+  position: relative; isolation: isolate; display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+  height: 52px; padding: 0 26px; border-radius: 12px; font-weight: 600; font-size: 16px; white-space: nowrap; cursor: pointer;
+  background-size: 220% auto; background-position: 30% 40%;
+  transition: transform .18s var(--lp-ease), box-shadow .18s var(--lp-ease), background-position .6s var(--lp-ease), filter .18s;
+}
+.btn-m::before { /* фаска: светлая сверху, тёмная снизу */
+  content: ""; position: absolute; inset: 0; border-radius: inherit; z-index: -1; pointer-events: none;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .38), inset 0 -1px 0 rgb(0 0 0 / .45), inset 0 0 0 1px rgb(255 255 255 / .08);
+}
+.btn-m::after { /* блик, который проезжает при наведении */
+  content: ""; position: absolute; inset: 0; border-radius: inherit; z-index: -1; pointer-events: none; opacity: .0;
+  background: linear-gradient(105deg, transparent 30%, rgb(255 255 255 / .22) 48%, transparent 66%);
+  background-size: 250% 100%; background-position: 120% 0; transition: background-position .9s var(--lp-ease), opacity .3s;
+}
+.btn-m:hover { background-position: 60% 40%; filter: brightness(1.06); }
+.btn-m:hover::after { opacity: 1; background-position: -30% 0; }
+.btn-m:active, .btn-m[data-s="press"] {
+  transform: translateY(1px); filter: brightness(.94);
+  box-shadow: 0 1px 1px rgb(0 0 0 / .35), inset 0 2px 6px rgb(0 0 0 / .45) !important;
+}
+.btn-m:focus-visible { outline: 2px solid rgb(var(--lp-accent)); outline-offset: 3px; }
+.btn-m[data-s="hover"] { background-position: 60% 40%; filter: brightness(1.06); }
+.btn-m[data-s="hover"]::after { opacity: 1; background-position: 10% 0; }
+
+.btn-m--violet { background-image: url(/media/ui/btn-violet.webp); color: #fff;
+  box-shadow: 0 1px 1px rgb(0 0 0 / .4), 0 10px 24px -8px rgb(76 58 190 / .7); }
+.btn-m--graphite { background-image: url(/media/ui/btn-graphite.webp); color: rgb(255 255 255 / .92);
+  box-shadow: 0 1px 1px rgb(0 0 0 / .45), 0 10px 22px -10px rgb(0 0 0 / .7); }
+.btn-m--titanium { background-image: url(/media/ui/btn-titanium.webp); color: #1d1d22;
+  box-shadow: 0 1px 1px rgb(0 0 0 / .3), 0 10px 22px -10px rgb(0 0 0 / .5); }
+/* гравировка: текст утоплен в металл */
+.btn-m--engraved.btn-m--violet, .btn-m--engraved.btn-m--graphite { color: rgb(255 255 255 / .82); text-shadow: 0 -1px 0 rgb(0 0 0 / .55), 0 1px 0 rgb(255 255 255 / .14); letter-spacing: .01em; }
+.btn-m--engraved.btn-m--titanium { color: rgb(29 29 34 / .78); text-shadow: 0 1px 0 rgb(255 255 255 / .55), 0 -1px 0 rgb(0 0 0 / .25); }
+
+/* жидкое стекло — для сравнения; работает только поверх изображения */
+.btn-glass {
+  position: relative; display: inline-flex; align-items: center; height: 52px; padding: 0 26px; border-radius: 999px;
+  font-weight: 600; color: #fff; background: rgb(255 255 255 / .10); backdrop-filter: blur(14px) saturate(1.6);
+  -webkit-backdrop-filter: blur(14px) saturate(1.6);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .45), inset 0 -1px 0 rgb(255 255 255 / .08), inset 0 0 0 1px rgb(255 255 255 / .18), 0 8px 24px -8px rgb(0 0 0 / .5);
+  transition: transform .18s var(--lp-ease), background .2s;
+}
+.btn-glass:hover { background: rgb(255 255 255 / .16); }
+.btn-glass:active { transform: scale(.98); }
+@media (prefers-reduced-motion: reduce) { .btn-m, .btn-m::after, .btn-glass { transition: none; } }
+
+/* ── Тестовые кнопки v2: чисто и ярко ── */
+.btn-v { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: .5rem; height: 52px; padding: 0 24px;
+  border-radius: 12px; font-weight: 600; font-size: 16px; white-space: nowrap; cursor: pointer;
+  transition: transform .2s var(--lp-ease), box-shadow .25s var(--lp-ease), background-color .2s, filter .2s; }
+.btn-v svg { transition: transform .25s var(--lp-ease); }
+.btn-v:hover svg { transform: translateX(3px); }
+.btn-v:active, .btn-v[data-s="press"] { transform: scale(.975); }
+.btn-v:focus-visible { outline: 2px solid rgb(var(--lp-accent)); outline-offset: 3px; }
+
+/* A — яркий акцент с тонким бликом сверху и мягким свечением при наведении */
+.btn-a { color: #fff; background: linear-gradient(180deg, #9b8bff 0%, #7a63f5 100%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .35), 0 1px 2px rgb(0 0 0 / .3), 0 6px 18px -6px rgb(122 99 245 / .6); }
+.btn-a:hover, .btn-a[data-s="hover"] { filter: brightness(1.07); box-shadow: inset 0 1px 0 rgb(255 255 255 / .4), 0 1px 2px rgb(0 0 0 / .3), 0 10px 30px -6px rgb(122 99 245 / .85); transform: translateY(-1px); }
+.btn-a[data-s="hover"] svg { transform: translateX(3px); }
+
+/* B — контраст: белая в тёмной теме, чёрная в светлой (Linear / Vercel) */
+.btn-b { color: #0b0b0d; background: #f4f4f6; box-shadow: inset 0 1px 0 #fff, 0 1px 2px rgb(0 0 0 / .4); }
+.btn-b:hover, .btn-b[data-s="hover"] { background: #fff; transform: translateY(-1px); box-shadow: 0 8px 24px -8px rgb(255 255 255 / .35); }
+[data-theme=light] .btn-b { color: #fff; background: #141418; box-shadow: inset 0 1px 0 rgb(255 255 255 / .15), 0 1px 2px rgb(0 0 0 / .3); }
+[data-theme=light] .btn-b:hover, [data-theme=light] .btn-b[data-s="hover"] { background: #000; box-shadow: 0 8px 24px -8px rgb(0 0 0 / .45); }
+.btn-b[data-s="hover"] svg { transform: translateX(3px); }
+
+/* C — акцент с живым градиентом, который плавно смещается при наведении */
+.btn-c { color: #fff; background: linear-gradient(110deg, #6d55f0, #9d7bff 45%, #6d55f0) 0 0 / 220% 100%;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .3), 0 6px 20px -8px rgb(109 85 240 / .7);
+  transition: background-position .8s var(--lp-ease), transform .2s var(--lp-ease), box-shadow .25s; }
+.btn-c:hover, .btn-c[data-s="hover"] { background-position: 100% 0; transform: translateY(-1px); box-shadow: inset 0 1px 0 rgb(255 255 255 / .35), 0 12px 32px -8px rgb(109 85 240 / .9); }
+.btn-c[data-s="hover"] svg { transform: translateX(3px); }
+
+/* второстепенная: тонкий контур, заливка при наведении */
+.btn-s { color: rgb(var(--lp-text)); background: rgb(var(--lp-text) / .04); box-shadow: inset 0 0 0 1px rgb(var(--lp-text) / .16); }
+.btn-s:hover, .btn-s[data-s="hover"] { background: rgb(var(--lp-text) / .08); box-shadow: inset 0 0 0 1px rgb(var(--lp-text) / .3); }
+@media (prefers-reduced-motion: reduce) { .btn-v, .btn-c, .btn-v svg { transition: none; } }
+
+/* Hero: метка отступления вырастает от линии факта к линии системы */
+.hero-mark { stroke-dasharray: 60; stroke-dashoffset: 60; animation: hero-mark 500ms var(--lp-ease) forwards; }
+@keyframes hero-mark { to { stroke-dashoffset: 0; } }
+@media (prefers-reduced-motion: reduce) { .hero-mark { animation: none; stroke-dashoffset: 0; } }
+
+/* Термопечать чека: точки слегка «растекаются», плотность строк немного гуляет */
+.thermal { filter: blur(0.18px) contrast(1.05); }
+.thermal .receipt-line:nth-child(3n) { --tp: .86; }
+.thermal .receipt-line:nth-child(5n+1) { --tp: .93; }
+.receipt.thermal[data-printed] .receipt-line { opacity: var(--tp, 1); }
+
+/* Hero: свет за стеклом медленно «дышит» */
+.hero-breath { animation: hero-breath 5.5s ease-in-out infinite; }
+@keyframes hero-breath { 0%, 100% { opacity: .35; transform: scaleY(.94); transform-origin: bottom; } 50% { opacity: .75; transform: scaleY(1.04); } }
+@media (prefers-reduced-motion: reduce) { .hero-breath { animation: none; opacity: .5; } }
+
+/* Смена языка (src/lib/locale-transition.ts): старая страница гаснет с лёгким размытием, новая проявляется. */
+html[data-tt="lang"]::view-transition-old(root) {
+  animation: lp-lang-out 260ms cubic-bezier(0.4, 0, 1, 1) both;
+}
+html[data-tt="lang"]::view-transition-new(root) {
+  animation: lp-lang-in 420ms cubic-bezier(0.16, 1, 0.3, 1) 120ms both;
+}
+@keyframes lp-lang-out { to { opacity: 0; filter: blur(6px); } }
+@keyframes lp-lang-in { from { opacity: 0; filter: blur(6px); } }

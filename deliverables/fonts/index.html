@@ -1,0 +1,204 @@
+<title>Шрифты Traders Care</title>
+<meta name="description" content="Сравнение пяти шрифтов для нового лендинга Traders Care на реальных текстах.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Wix+Madefor+Display:wght@400;500;600;700&family=Wix+Madefor+Text:wght@400;500;600&family=Geologica:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Commissioner:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Martian+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  color-scheme:dark;
+  --ground:#0B0B0D; --raised:#131316; --line:#24242A;
+  --text:#EDEDF0; --text2:#A6A6AF; --muted:#85858E;
+  --accent:#8D7CF8; --accent-ink:#0B0B0D; --profit:#32AE70; --loss:#FF5A6A;
+}
+:root[data-theme="light"]{
+  color-scheme:light;
+  --ground:#EEF0F3; --raised:#FFFFFF; --line:#D9DCE2;
+  --text:#141418; --text2:#4A4D57; --muted:#5F6370;
+  --accent:#5B45D6; --accent-ink:#FFFFFF; --profit:#1B8E5C; --loss:#D92D3B;
+}
+@media (prefers-color-scheme:light){
+  :root:not([data-theme="dark"]){
+    color-scheme:light;
+    --ground:#EEF0F3; --raised:#FFFFFF; --line:#D9DCE2;
+    --text:#141418; --text2:#4A4D57; --muted:#5F6370;
+    --accent:#5B45D6; --accent-ink:#FFFFFF; --profit:#1B8E5C; --loss:#D92D3B;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--text);font:400 15px/1.55 ui-sans-serif,system-ui,-apple-system,sans-serif;padding-inline:20px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1280px;margin:0 auto;padding-block:40px 80px}
+.top{display:flex;flex-wrap:wrap;gap:16px 32px;align-items:end;justify-content:space-between;padding-bottom:28px;border-bottom:1px solid var(--line)}
+.top h1{margin:0;font:600 28px/1.15 ui-sans-serif,system-ui,sans-serif;letter-spacing:-.01em}
+.top p{margin:6px 0 0;color:var(--text2);max-width:640px}
+.controls{display:flex;gap:8px;flex-wrap:wrap}
+.controls button{font:500 14px/1 ui-sans-serif,system-ui,sans-serif;color:var(--text);background:transparent;border:1px solid var(--line);border-radius:8px;padding:10px 14px;cursor:pointer}
+.controls button[aria-pressed="true"]{background:var(--text);color:var(--ground);border-color:var(--text)}
+.controls button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.spec{padding-block:56px;border-bottom:1px solid var(--line);display:grid;grid-template-columns:minmax(0,1fr);gap:36px}
+.head{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 20px}
+.letter{font:500 13px/1 ui-monospace,Menlo,monospace;color:var(--accent)}
+.name{font-size:22px;font-weight:600;letter-spacing:-.01em}
+.meta{color:var(--muted);font-size:14px}
+
+.hero{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:40px;align-items:end}
+.h1{margin:0;font-weight:600;font-size:clamp(38px,5.4vw,76px);line-height:1.04;letter-spacing:-.03em;text-wrap:balance}
+.lead{margin:20px 0 0;font-size:20px;line-height:1.5;color:var(--text2);max-width:40ch}
+.row{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px;align-items:center}
+.btn{font:inherit;font-weight:600;font-size:16px;border-radius:8px;padding:15px 22px;border:1px solid transparent;cursor:default}
+.btn.p{background:var(--accent);color:var(--accent-ink)}
+.btn.s{background:transparent;color:var(--text);border-color:var(--line)}
+.facts{display:flex;flex-wrap:wrap;gap:0;margin-top:18px;color:var(--muted);font-size:14px}
+.facts span{padding-inline:12px;border-left:1px solid var(--line)}
+.facts span:first-child{padding-left:0;border-left:0}
+
+.num-card{background:var(--raised);border:1px solid var(--line);border-radius:20px;padding:24px}
+.big{font-weight:500;font-size:clamp(56px,6.6vw,96px);line-height:1;letter-spacing:-.04em;color:var(--loss);font-variant-numeric:tabular-nums}
+.big-cap{margin-top:10px;color:var(--text2);font-size:15px}
+.tbl{margin-top:22px;width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:14px}
+.tbl th{font-weight:500;color:var(--muted);text-align:left;padding:6px 0;border-bottom:1px solid var(--line)}
+.tbl td{padding:7px 0;border-bottom:1px solid var(--line)}
+.tbl td.r,.tbl th.r{text-align:right}
+.pos{color:var(--profit)} .neg{color:var(--loss)}
+
+.langs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px}
+.langs div{border-top:1px solid var(--line);padding-top:14px}
+.langs b{display:block;font-size:12px;font-weight:500;color:var(--muted);margin-bottom:8px;font-family:ui-monospace,Menlo,monospace}
+.langs h3{margin:0;font-size:30px;line-height:1.12;font-weight:600;letter-spacing:-.02em;text-wrap:balance}
+.langs p{margin:10px 0 0;color:var(--text2);font-size:17px;line-height:1.6}
+
+.bottom{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:40px;align-items:start}
+.glyphs{font-size:40px;line-height:1.2;letter-spacing:-.01em;font-weight:500;word-break:break-word}
+.glyphs small{display:block;font-size:14px;color:var(--muted);font-weight:400;letter-spacing:0;margin-top:8px}
+.receipt{background:#F7F4EC;color:#1A1A1A;border-radius:4px;padding:18px 20px;font-size:13px;line-height:1.7;white-space:pre;overflow-x:auto;box-shadow:0 1px 0 rgba(0,0,0,.2)}
+.receipt .neg{color:#C0263A}
+.receipt-cap{margin-top:8px;color:var(--muted);font-size:13px}
+.verdict{margin-top:28px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;font-size:15px}
+.verdict h4{margin:0 0 6px;font-size:13px;color:var(--muted);font-weight:500;font-family:ui-monospace,Menlo,monospace}
+.verdict ul{margin:0;padding-left:18px;color:var(--text2)}
+.verdict li{margin-bottom:4px}
+
+.note{margin-top:48px;color:var(--text2);max-width:760px}
+.note h2{font:600 22px/1.2 ui-sans-serif,system-ui,sans-serif;color:var(--text);margin:0 0 10px}
+
+@media (max-width:860px){
+  .hero,.bottom{grid-template-columns:minmax(0,1fr)}
+  .langs{grid-template-columns:minmax(0,1fr)}
+  .verdict{grid-template-columns:minmax(0,1fr)}
+  .glyphs{font-size:30px}
+}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>Шрифты для Traders Care</h1>
+      <p>Пять шрифтов с полной кириллицей, включая украинские ї, є, ґ. Все бесплатные, с лицензией для веба. Каждый показан на наших текстах: заголовок, крупная цифра, таблица с P&amp;L, три языка и строка чека.</p>
+    </div>
+    <div class="controls" role="group" aria-label="Тема">
+      <button type="button" id="t-dark" aria-pressed="true">Тёмная</button>
+      <button type="button" id="t-light" aria-pressed="false">Светлая</button>
+    </div>
+  </header>
+
+  <div id="specs"></div>
+
+  <section class="note">
+    <h2>Платные варианты</h2>
+    <p>Если захочется уровня выше, есть платные шрифты с кириллицей: TT Hoves Pro и TT Norms Pro (TypeType), Suisse Int'l (Swiss Typefaces), Aeonik Pro (CoType). Показать их здесь нельзя без файлов шрифта. Если выберешь направление, скачаем пробную версию у производителя и сравню на этой же странице. По характеру ближе всего: TT Hoves — к варианту B, Suisse — к C, Aeonik — к A.</p>
+  </section>
+</div>
+
+<script>
+const FONTS = [
+  { id:"A", name:"Onest", family:"'Onest'", mono:"'JetBrains Mono'", monoName:"JetBrains Mono",
+    meta:"Вариативный, 100–900 · сильная кириллица",
+    pros:["Кириллица естественная, без «латинских» пропорций в заголовках","Мягкие, но собранные формы — дружелюбно и дорого","Хорошо держит и крупный заголовок, и мелкий текст"],
+    cons:["Меньше «инженерного» характера, чем у C и D","Табличные цифры — проверить в таблице ниже"] },
+  { id:"B", name:"Wix Madefor Display + Text", family:"'Wix Madefor Display'", body:"'Wix Madefor Text'", mono:"'JetBrains Mono'", monoName:"JetBrains Mono",
+    meta:"Wix, 2022 · отдельные версии для заголовков и текста",
+    pros:["Острые, современные формы — ближе всего к Behance-референсам","Пара Display + Text: заголовки плотные, текст читабельный","Малоизвестен в веб-дизайне — не выглядит шаблонно"],
+    cons:["Узнаваем для дизайнеров, работавших с Wix","Чуть холоднее и строже, чем A"] },
+  { id:"C", name:"Geologica", family:"'Geologica'", mono:"'Martian Mono'", monoName:"Martian Mono",
+    meta:"Вариативный · есть оси «острота» и «курсивность»",
+    pros:["Геометрия с точностью чертежа — прямо про «прецизионные инструменты»","Вариативные оси дают свой характер в заголовках","Выразительные цифры"],
+    cons:["Широкие буквы: русский и украинский заголовки займут больше строк","В мелком тексте менее нейтрален"] },
+  { id:"D", name:"IBM Plex Sans", family:"'IBM Plex Sans'", mono:"'IBM Plex Mono'", monoName:"IBM Plex Mono",
+    meta:"IBM, 2017 · семья с родным моноширинным",
+    pros:["Инженерный, приборный характер","Родной моноширинный для чека и кода — полная семья","Отличные табличные цифры"],
+    cons:["Узнаваем как «корпоративный IBM»","Меньше премиальности, больше технологичности"] },
+  { id:"E", name:"Commissioner", family:"'Commissioner'", mono:"'JetBrains Mono'", monoName:"JetBrains Mono",
+    meta:"Kostas Bartsokas, 2020 · вариативный, ось «флёр» у букв",
+    pros:["Элегантный, чуть «журнальный» — самый премиальный из бесплатных","Узкие пропорции экономят место на длинных языках","Нестандартный — точно не шаблон"],
+    cons:["Характерные буквы могут отвлекать в интерфейсе","Крупные цифры менее «финансовые»"] },
+];
+
+const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
+const html = f => `
+<section class="spec" style="font-family:${f.body||f.family},system-ui,sans-serif" aria-labelledby="n-${f.id}">
+  <div class="head" style="font-family:${f.family},system-ui,sans-serif">
+    <span class="letter">${f.id}</span><span class="name" id="n-${f.id}">${esc(f.name)}</span><span class="meta">${esc(f.meta)}</span>
+  </div>
+
+  <div class="hero">
+    <div>
+      <h2 class="h1" style="font-family:${f.family},system-ui,sans-serif">Торгуй по своим правилам. И знай, сколько стоит каждое отступление.</h2>
+      <p class="lead">Сделки приходят сами с MetaTrader, cTrader, Match-Trader и DXtrade. Traders Care считает метрики и следит за правилами проп-фирмы в реальном времени.</p>
+      <div class="row"><span class="btn p">Начать бесплатно</span><span class="btn s">Как это работает ↓</span></div>
+      <div class="facts"><span>1 счёт бесплатно</span><span>Только чтение</span><span>Без карты</span></div>
+    </div>
+    <div class="num-card">
+      <div class="big" style="font-family:${f.family},system-ui,sans-serif">−$2 340</div>
+      <div class="big-cap">14 сделок вне системы за квартал</div>
+      <table class="tbl">
+        <thead><tr><th>Инструмент</th><th class="r">Сделки</th><th class="r">Win rate</th><th class="r">P&amp;L</th></tr></thead>
+        <tbody>
+          <tr><td>XAUUSD</td><td class="r">48</td><td class="r">58.3 %</td><td class="r pos">+1 240.50</td></tr>
+          <tr><td>EURUSD</td><td class="r">31</td><td class="r">41.9 %</td><td class="r neg">−87.20</td></tr>
+          <tr><td>NAS100</td><td class="r">17</td><td class="r">64.7 %</td><td class="r pos">+3 106.00</td></tr>
+          <tr><td>GBPJPY</td><td class="r">9</td><td class="r">33.3 %</td><td class="r neg">−1 911.75</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="langs">
+    <div><b>RU</b><h3 style="font-family:${f.family},system-ui,sans-serif">Узнай о нарушении до того, как фирма закроет счёт.</h3><p>Дневной убыток, общая просадка, consistency и цель по прибыли пересчитываются после каждой сделки.</p></div>
+    <div><b>UK</b><h3 style="font-family:${f.family},system-ui,sans-serif">Дізнайся про порушення до того, як фірма закриє рахунок.</h3><p>Ґрунтовний аналіз: їхні правила, твої угоди, єдиний журнал. Щоденний збиток і загальна просадка.</p></div>
+    <div><b>EN</b><h3 style="font-family:${f.family},system-ui,sans-serif">Know about a breach before the firm closes your account.</h3><p>Daily loss, max drawdown, consistency and profit target recalculated after every trade.</p></div>
+  </div>
+
+  <div class="bottom">
+    <div>
+      <div class="glyphs" style="font-family:${f.family},system-ui,sans-serif">Ґ є ї Ї Є Ґ ж ф щ ъ ё Й<br>R 2.4R 58% $400K 0123456789
+        <small>Кириллица, украинские буквы и цифры в размере 40 px</small></div>
+      <div class="verdict">
+        <div><h4>Сильные стороны</h4><ul>${f.pros.map(p=>`<li>${esc(p)}</li>`).join("")}</ul></div>
+        <div><h4>Риски</h4><ul>${f.cons.map(p=>`<li>${esc(p)}</li>`).join("")}</ul></div>
+      </div>
+    </div>
+    <div>
+      <div class="receipt" style="font-family:${f.mono},ui-monospace,monospace">TRADERS CARE · РАЗБОР Q3
+--------------------------------
+Вход без подтверждения ×5 <span class="neg">−$640</span>
+Сделка после 16:00     ×7 <span class="neg">−$910</span>
+Риск выше 1 %          ×2 <span class="neg">−$520</span>
+--------------------------------
+ИТОГО ВНЕ СИСТЕМЫ       <span class="neg">−$2 340</span></div>
+      <div class="receipt-cap">Моноширинный в паре: ${esc(f.monoName)}</div>
+    </div>
+  </div>
+</section>`;
+document.getElementById("specs").innerHTML = FONTS.map(html).join("");
+
+const setTheme = t => {
+  document.documentElement.setAttribute("data-theme", t);
+  document.getElementById("t-dark").setAttribute("aria-pressed", t==="dark");
+  document.getElementById("t-light").setAttribute("aria-pressed", t==="light");
+  try { localStorage.setItem("fonts-theme", t); } catch(e) {}
+};
+document.getElementById("t-dark").onclick = () => setTheme("dark");
+document.getElementById("t-light").onclick = () => setTheme("light");
+let saved = null; try { saved = localStorage.getItem("fonts-theme"); } catch(e) {}
+setTheme(saved || "dark");
+</script>

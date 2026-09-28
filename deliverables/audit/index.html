@@ -1,0 +1,450 @@
+<title>Аудит traderscare.io</title>
+<meta name="description" content="UX-аудит лендинга Traders Care: что мешает продавать и что менять в редизайне.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geologica:wght@400;500;600&family=Golos+Text:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --ground:#F4F5F7; --surface:#FFFFFF; --sunk:#ECEEF2;
+  --ink:#15161A; --ink-2:#3B3E47; --muted:#5E6371; --rule:#DCDFE5;
+  --accent:#5B45D6; --accent-soft:#ECE9FC;
+  --crit:#B93A0B; --crit-soft:#FCEBE2;
+  --imp:#8A5A00; --imp-soft:#FBF1DC;
+  --low:#51596A; --low-soft:#E9ECF1;
+  --ok:#1B7A4E;
+  --shot:#0C0C0E;
+  --display:"Geologica",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --body:"Golos Text",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --ground:#0F1013; --surface:#17181D; --sunk:#1D1F25;
+    --ink:#ECEDF1; --ink-2:#C9CBD3; --muted:#9A9EAB; --rule:#2B2D35;
+    --accent:#A193FA; --accent-soft:#25213F;
+    --crit:#FF9A6B; --crit-soft:#3A2016;
+    --imp:#F2C265; --imp-soft:#33290F;
+    --low:#A9B1C2; --low-soft:#23262E;
+    --ok:#5CCB93;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ground:#0F1013; --surface:#17181D; --sunk:#1D1F25;
+  --ink:#ECEDF1; --ink-2:#C9CBD3; --muted:#9A9EAB; --rule:#2B2D35;
+  --accent:#A193FA; --accent-soft:#25213F;
+  --crit:#FF9A6B; --crit-soft:#3A2016;
+  --imp:#F2C265; --imp-soft:#33290F;
+  --low:#A9B1C2; --low-soft:#23262E;
+  --ok:#5CCB93;
+}
+
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);font:400 16px/1.62 var(--body);-webkit-font-smoothing:antialiased;padding-inline:20px}
+.wrap{max-width:1040px;margin:0 auto;padding-block:56px 96px}
+.col{max-width:720px}
+h1,h2,h3{font-family:var(--display);font-weight:600;letter-spacing:-.02em;text-wrap:balance;margin:0}
+h1{font-size:clamp(34px,5.4vw,58px);line-height:1.04}
+h2{font-size:clamp(26px,3.2vw,34px);line-height:1.12;margin-bottom:14px}
+h3{font-size:19px;line-height:1.3;letter-spacing:-.01em;margin-bottom:6px}
+p{margin:0 0 14px}
+a{color:var(--accent)}
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:.92em}
+.muted{color:var(--muted)}
+strong{font-weight:600;color:var(--ink)}
+
+/* masthead */
+.mast{display:grid;gap:28px;padding-bottom:40px;border-bottom:1px solid var(--rule)}
+.meta{display:flex;flex-wrap:wrap;gap:6px 22px;font-size:14px;color:var(--muted)}
+.meta b{font-weight:500;color:var(--ink-2)}
+.lead{font-size:clamp(18px,2vw,21px);line-height:1.5;color:var(--ink-2);max-width:680px;margin:0}
+
+/* verdict */
+.verdict{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:14px;overflow:hidden;margin-top:8px}
+.verdict div{background:var(--surface);padding:18px 20px}
+.verdict .big{font-family:var(--display);font-size:34px;font-weight:600;letter-spacing:-.03em;line-height:1}
+.verdict .cap{font-size:14px;color:var(--muted);margin-top:8px;line-height:1.4}
+
+/* sections */
+section{padding-top:72px}
+.kick{font-size:13px;font-weight:500;color:var(--accent);margin-bottom:10px;font-family:var(--mono)}
+.intro{font-size:18px;color:var(--ink-2);max-width:680px}
+
+/* top-5 */
+.top5{list-style:none;margin:28px 0 0;padding:0;display:grid;gap:0;counter-reset:t}
+.top5 li{counter-increment:t;display:grid;grid-template-columns:52px 1fr;gap:4px 18px;padding:22px 0;border-top:1px solid var(--rule)}
+.top5 li:last-child{border-bottom:1px solid var(--rule)}
+.top5 li::before{content:counter(t);font-family:var(--display);font-size:30px;font-weight:500;color:var(--accent);line-height:1;grid-row:span 2}
+.top5 h3{margin:0}
+.top5 p{margin:0;color:var(--ink-2)}
+
+/* length chart */
+.len{margin-top:34px;display:grid;gap:14px}
+.len-row{display:grid;grid-template-columns:118px 1fr;align-items:center;gap:16px}
+.len-name{font-size:14px;font-weight:500;line-height:1.25}
+.len-name span{display:block;font-family:var(--mono);font-size:12.5px;font-weight:400;color:var(--muted)}
+.len-bar img{display:block;height:auto;border-radius:6px;box-shadow:0 0 0 1px var(--rule)}
+.len-row.us .len-name{color:var(--accent)}
+.len-row.us .len-bar img{box-shadow:0 0 0 2px var(--accent)}
+.len-note{font-size:14px;color:var(--muted);margin-top:4px}
+
+/* figures */
+figure{margin:28px 0 0}
+figure img{display:block;width:100%;height:auto;border-radius:12px;background:var(--shot);box-shadow:0 0 0 1px var(--rule)}
+figcaption{font-size:14px;color:var(--muted);margin-top:10px;max-width:680px}
+.fig-narrow{max-width:800px}
+
+/* findings */
+.finds{margin-top:26px;display:grid;border-top:1px solid var(--rule)}
+.f{display:grid;grid-template-columns:118px 1fr;gap:6px 20px;padding:18px 0;border-bottom:1px solid var(--rule)}
+.f p{margin:0;color:var(--ink-2)}
+.f p strong{display:block;margin-bottom:2px}
+.sev{align-self:start;display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;padding:4px 10px 4px 8px;border-radius:6px;white-space:nowrap;width:max-content}
+.sev::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.sev.c{color:var(--crit);background:var(--crit-soft)}
+.sev.i{color:var(--imp);background:var(--imp-soft)}
+.sev.l{color:var(--low);background:var(--low-soft)}
+
+/* tables */
+.tbl{margin-top:26px;overflow-x:auto;border:1px solid var(--rule);border-radius:12px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14.5px;min-width:560px}
+th,td{text-align:left;padding:12px 16px;border-bottom:1px solid var(--rule);vertical-align:top}
+tr:last-child td{border-bottom:0}
+th{font-weight:500;color:var(--muted);font-size:13px;background:var(--sunk)}
+td.n,th.n{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+tr.us td{background:var(--accent-soft)}
+tr.us td:first-child{font-weight:600;color:var(--accent)}
+.y{color:var(--ok);font-weight:600}
+.no{color:var(--muted)}
+
+/* rivals */
+.rivals{margin-top:30px;display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:30px 28px}
+.rival img{display:block;width:100%;height:auto;border-radius:10px;box-shadow:0 0 0 1px var(--rule)}
+.rival h3{margin-top:14px}
+.rival dl{margin:8px 0 0;display:grid;gap:8px;font-size:14.5px}
+.rival dt{font-size:12.5px;font-weight:600;color:var(--muted)}
+.rival dd{margin:0;color:var(--ink-2)}
+
+/* two-col text */
+.pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:36px;margin-top:28px}
+.pair ul{margin:10px 0 0;padding-left:18px;color:var(--ink-2)}
+.pair li{margin-bottom:6px}
+
+/* action plan */
+.quick{margin-top:24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.quick div{background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:18px}
+.quick h3{font-size:16px}
+.quick p{margin:0;font-size:14.5px;color:var(--ink-2)}
+.flow{list-style:none;margin:26px 0 0;padding:0;counter-reset:s;display:grid}
+.flow li{counter-increment:s;display:grid;grid-template-columns:44px 1fr;gap:14px;padding:13px 0;border-top:1px solid var(--rule)}
+.flow li::before{content:counter(s,decimal-leading-zero);font-family:var(--mono);font-size:13px;color:var(--accent);padding-top:3px}
+.flow b{font-weight:600}
+.flow span{color:var(--ink-2)}
+
+.og{display:grid;grid-template-columns:minmax(0,300px) 1fr;gap:24px;align-items:center;margin-top:26px}
+.og img{width:100%;height:auto;border-radius:8px;box-shadow:0 0 0 1px var(--rule)}
+
+footer{margin-top:88px;padding-top:24px;border-top:1px solid var(--rule);font-size:13.5px;color:var(--muted);display:grid;gap:6px}
+
+@media (max-width:640px){
+  .wrap{padding-block:32px 64px}
+  .f{grid-template-columns:1fr;gap:8px}
+  .len-row{grid-template-columns:1fr;gap:6px}
+  .top5 li{grid-template-columns:36px 1fr}
+  .og{grid-template-columns:1fr}
+}
+</style>
+
+<div class="wrap">
+
+<header class="mast">
+  <div class="meta">
+    <span><b>Traders Care</b> · traderscare.io</span>
+    <span>UX-аудит лендинга</span>
+    <span>сентябрь 2026</span>
+  </div>
+  <h1>Лендинг не показывает продукт, который продаёт</h1>
+  <p class="lead">Traders Care умеет то, чего нет у конкурентов: живой контроль правил проп-фирм, данные брокера, которые нельзя подделать, проверяемые результаты. Главная страница этого не показывает — на ней четыре блока текста, ни одного экрана и две ошибки в тарифах. Ниже — что именно мешает, как это делают конкуренты и с чего начать.</p>
+  <div class="verdict">
+    <div><div class="big num">0</div><div class="cap">изображений и экранов продукта на странице</div></div>
+    <div><div class="big num">4</div><div class="cap">блока: hero, функции, тарифы, футер</div></div>
+    <div><div class="big num">×5</div><div class="cap">короче лендингов Scope360, Edgewonk и Tradezella</div></div>
+    <div><div class="big num">2</div><div class="cap">ошибки в тарифах, которые противоречат FAQ</div></div>
+  </div>
+</header>
+
+<section id="summary">
+  <div class="col">
+    <div class="kick">Коротко</div>
+    <h2>Пять главных выводов</h2>
+    <p class="intro">Упорядочены по тому, насколько сильно каждая проблема влияет на регистрации и продажи.</p>
+  </div>
+  <ol class="top5">
+    <li><h3>Продукт не показан ни разу</h3><p>Посетитель должен поверить на слово, что за текстом есть хороший интерфейс. У всех трёх конкурентов экран продукта — главный визуал уже на первом экране.</p></li>
+    <li><h3>Страница не отвечает на вопросы покупателя</h3><p>Как это работает, безопасно ли давать доступ к счёту, кто уже пользуется, чем это лучше Excel и конкурентов, как оплатить — ответов нет. Часть из них уже написана в FAQ, но на отдельной странице.</p></li>
+    <li><h3>Главные козыри спрятаны</h3><p>Живой контроль просадки и consistency, данные напрямую от брокера, верифицированные карточки, каталог проп-фирм с квизом, три языка, самые низкие цены на рынке — всё это либо одна строка, либо отсутствует.</p></li>
+    <li><h3>Ошибки в тарифах подрывают доверие</h3><p>На лендинге у Free 5 счетов, в FAQ — 1. У Pro указан тот же ИИ, что у Trader, хотя FAQ обещает Pro топовую модель. Для сервиса про точные цифры это особенно заметно.</p></li>
+    <li><h3>Вёрстка аккуратная, но выглядит как шаблон</h3><p>Надзаголовок капсом, стеклянная карточка, сетка из шести одинаковых карточек с иконками. Каждое решение — самое типовое, поэтому страница не ощущается премиальной.</p></li>
+  </ol>
+</section>
+
+<section id="length">
+  <div class="col">
+    <div class="kick">Объём</div>
+    <h2>Все четыре страницы в одном масштабе</h2>
+    <p class="intro">Каждая полоса — полный снимок лендинга на ширине 1440 px, повёрнутый набок. Длина полосы — длина страницы.</p>
+  </div>
+  <div class="len" role="img" aria-label="Длина лендингов: Traders Care 2 143 px, Scope360 11 754 px, Edgewonk 11 286 px, Tradezella 13 599 px">
+    <div class="len-row us"><div class="len-name">Traders Care<span>2 143 px</span></div><div class="len-bar"><img src="img/strip-tc-ru.webp" alt="" style="width:15.8%"></div></div>
+    <div class="len-row"><div class="len-name">Scope360<span>11 754 px</span></div><div class="len-bar"><img src="img/strip-scope360.webp" alt="" style="width:86.4%"></div></div>
+    <div class="len-row"><div class="len-name">Edgewonk<span>11 286 px</span></div><div class="len-bar"><img src="img/strip-edgewonk.webp" alt="" style="width:83%"></div></div>
+    <div class="len-row"><div class="len-name">Tradezella<span>13 599 px</span></div><div class="len-bar"><img src="img/strip-tradezella.webp" alt="" style="width:100%"></div></div>
+  </div>
+  <p class="len-note col">Длина сама по себе не цель. Но за ней стоят ответы на вопросы, которые покупатель задаёт до регистрации, — у Traders Care на них просто не осталось места.</p>
+</section>
+
+<section id="hero">
+  <div class="col">
+    <div class="kick">Первый экран</div>
+    <h2>Что посетитель видит за первые пять секунд</h2>
+    <p class="intro">Понятно, что это «рабочее место трейдера» с журналом и синхронизацией MetaTrader и что начать можно бесплатно. Непонятно, для кого это, как выглядит, чем отличается и почему можно доверить доступ к счёту.</p>
+  </div>
+  <figure>
+    <img src="img/hero.webp" alt="Первый экран traderscare.io/ru с пометками: надзаголовок «без регистрации», пустая правая часть карточки, четыре кнопки" width="1440" height="660">
+    <figcaption>traderscare.io/ru, 1440 px, тёмная тема. Светлая тема устроена так же.</figcaption>
+  </figure>
+  <div class="finds">
+    <div class="f"><span class="sev i">Важно</span><p><strong>Заголовок называет категорию, а не результат</strong>«Рабочее место трейдера» подходит любому продукту. Конкуренты обещают результат: «Know your edge», «turns your data into profits». У Traders Care есть своя сильная формула, которая нигде не используется: торговать по своим правилам и видеть, во что обходится каждое отступление.</p></div>
+    <div class="f"><span class="sev i">Важно</span><p><strong>Главная аудитория не видит своей боли</strong>Проп-трейдеры, которые боятся нарушить лимит просадки и потерять челлендж, упомянуты только в одной из шести карточек ниже.</p></div>
+    <div class="f"><span class="sev i">Важно</span><p><strong>Надзаголовок противоречит кнопке</strong>«Без регистрации» стоит над «Начать бесплатно», которая ведёт на регистрацию. Фраза относится к бесплатным калькуляторам, но читается как обещание про весь продукт.</p></div>
+    <div class="f"><span class="sev i">Важно</span><p><strong>Четыре равноценных действия</strong>«Начать бесплатно», «Проп-фирмы», «Полезные инструменты», «Войти в воркспейс». Три из четырёх уводят с продукта, а «Войти» дублирует кнопку в шапке.</p></div>
+    <div class="f"><span class="sev l">Улучшение</span><p><strong>Пустая половина карточки</strong>Правая часть hero — самое дорогое место на странице — не занята ничем.</p></div>
+  </div>
+</section>
+
+<section id="template">
+  <div class="col">
+    <div class="kick">Визуал</div>
+    <h2>Почему страница выглядит сделанной по шаблону</h2>
+    <p class="intro">Сетка ровная, отступы последовательные, текст читается — к качеству вёрстки претензий нет. Проблема в том, что каждое решение выбрано самым типовым, и вместе они складываются в узнаваемый облик сгенерированного лендинга.</p>
+  </div>
+  <figure>
+    <img src="img/features.webp" alt="Блок «Всё для системного трейдера»: шесть одинаковых карточек с иконкой в квадрате" width="1440" height="647">
+    <figcaption>Шесть функций разного веса оформлены одинаково: главное не отличить от второстепенного.</figcaption>
+  </figure>
+  <div class="tbl">
+    <table>
+      <thead><tr><th>Приём</th><th>Где</th><th>Что с ним не так</th></tr></thead>
+      <tbody>
+        <tr><td>Надзаголовок капсом с разрядкой в цвете акцента</td><td>hero</td><td>Самый частый штамп сгенерированных страниц</td></tr>
+        <tr><td>Стеклянная карточка с размытием вокруг hero</td><td>hero</td><td>Контент заперт в рамке, половина рамки пустая</td></tr>
+        <tr><td>Сетка 3×2 «иконка в квадрате + заголовок + текст»</td><td>функции</td><td>Все функции одного веса, нет главной</td></tr>
+        <tr><td>Центрированный заголовок над каждым блоком</td><td>везде</td><td>Один ритм на всю страницу, композиция не меняется</td></tr>
+        <tr><td>Четыре одинаковые карточки тарифов</td><td>тарифы</td><td>Рекомендуемый тариф отмечен только тонкой рамкой</td></tr>
+        <tr><td>Размытое фиолетовое свечение в углу</td><td>фон</td><td>Декор без смысла вместо предмета</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="pair">
+    <div>
+      <h3>Чего не хватает для премиального ощущения</h3>
+      <ul>
+        <li><strong>Предмета.</strong> Крупный интерфейс с правдоподобными данными: кривая эквити, лимит просадки, карточка сделки.</li>
+        <li><strong>Контраста масштабов.</strong> Между заголовком 72 px и текстом 15 px нет ни одного крупного элемента.</li>
+        <li><strong>Смены композиции.</strong> Асимметрия, крупные планы, полноэкранные сцены вместо «заголовок + сетка» в каждом блоке.</li>
+        <li><strong>Материала.</strong> Ни одного изображения, объекта или фактуры.</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Шрифт стоит заменить</h3>
+      <p class="muted" style="margin-top:10px">Сайт использует SF Pro. Лицензия Apple разрешает его только на платформах Apple, поэтому раздавать его как веб-шрифт посетителям с Windows и Android нельзя. Редизайн — удобный момент перейти на шрифт с веб-лицензией и полной кириллицей, включая украинские ї, є, ґ.</p>
+    </div>
+  </div>
+</section>
+
+<section id="pricing">
+  <div class="col">
+    <div class="kick">Тарифы и путь к оплате</div>
+    <h2>Тарифы противоречат FAQ, а купить с лендинга нельзя</h2>
+  </div>
+  <figure>
+    <img src="img/pricing.webp" alt="Блок тарифов с пометками: у Free 5 счетов, у Pro тот же ИИ, что у Trader, одна кнопка под всеми тарифами" width="1200" height="503">
+  </figure>
+  <div class="finds">
+    <div class="f"><span class="sev c">Критично</span><p><strong>Free: «Торговые счета · 5»</strong>В FAQ: «Free и Solo: 1 счёт». Бесплатный тариф на лендинге щедрее платного Solo.</p></div>
+    <div class="f"><span class="sev c">Критично</span><p><strong>Pro и Trader с одинаковым ИИ</strong>Оба — «Sonnet». В FAQ Pro получает «топовую модель с авто-эскалацией». Разница в $30 в месяц на лендинге не объяснена.</p></div>
+    <div class="f"><span class="sev c">Критично</span><p><strong>Нет пути к оплате</strong>Сейчас платный тариф активируется вручную через поддержку, оплата криптой. На лендинге об этом ни слова: человек выбирает $29 и попадает в бесплатную регистрацию.</p></div>
+    <div class="f"><span class="sev i">Важно</span><p><strong>Одна кнопка на четыре тарифа</strong>У карточек нет своих кнопок, выбрать Trader или Pro нельзя.</p></div>
+    <div class="f"><span class="sev i">Важно</span><p><strong>Реальная разница между тарифами не показана</strong>Синхронизация раз в 30, 15 и 5 минут не указана. «Автоматизация» не объяснена. «Haiku» и «Sonnet» ничего не говорят трейдеру — лучше «быстрый», «глубокий» и «максимальный» анализ.</p></div>
+    <div class="f"><span class="sev l">Улучшение</span><p><strong>Не сказаны сильные условия</strong>«Без автосписаний» — редкость на рынке и хороший аргумент. Годовой оплаты нет, хотя у Scope360 скидка 15%, у Tradezella около 25%.</p></div>
+  </div>
+  <div class="col" style="margin-top:34px">
+    <h3>Цена — сильный аргумент, который не используется</h3>
+    <p class="muted">Traders Care дешевле всех на каждом уровне, но на лендинге цены не с чем сравнить.</p>
+  </div>
+  <div class="tbl">
+    <table>
+      <thead><tr><th></th><th class="n">Бесплатно</th><th class="n">Вход с синхронизацией</th><th class="n">Средний</th><th class="n">Максимальный</th></tr></thead>
+      <tbody>
+        <tr class="us"><td>Traders Care</td><td class="n">1 счёт</td><td class="n">$17 / мес</td><td class="n">$29 · 3 счёта</td><td class="n">$59 · 8 счетов</td></tr>
+        <tr><td>Scope360</td><td class="n">без подключений</td><td class="n">$20 / мес</td><td class="n">$45 · 10 счетов</td><td class="n no">—</td></tr>
+        <tr><td>Tradezella</td><td class="n no">—</td><td class="n">$35 / мес</td><td class="n">$59</td><td class="n">$99</td></tr>
+        <tr><td>Edgewonk</td><td class="n no">—</td><td class="n">$197 / год</td><td class="n no">—</td><td class="n no">—</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="trust">
+  <div class="col">
+    <div class="kick">Доверие</div>
+    <h2>На странице нет ни одного сигнала доверия</h2>
+    <p class="intro">Продукт просит доступ к торговому счёту. Посетитель ищет подтверждение, что это безопасно и что продуктом уже пользуются. Конкуренты дают его сразу под первым экраном.</p>
+  </div>
+  <div class="tbl">
+    <table>
+      <thead><tr><th>Сигнал</th><th>Traders Care</th><th>Scope360</th><th>Tradezella</th><th>Edgewonk</th></tr></thead>
+      <tbody>
+        <tr><td>Экраны продукта</td><td class="no">нет</td><td class="y">крупно, тур вкладками</td><td class="y">в каждом блоке</td><td class="y">в каждом блоке</td></tr>
+        <tr><td>Рейтинг и отзывы</td><td class="no">нет</td><td class="y">Trustpilot</td><td class="y">Trustpilot 4.8</td><td class="y">блок отзывов</td></tr>
+        <tr><td>Цифры масштаба</td><td class="no">нет</td><td class="no">нет</td><td class="y">100K+ трейдеров</td><td class="y">8M+ сделок</td></tr>
+        <tr><td>Логотипы платформ</td><td class="no">нет</td><td class="y">биржи</td><td class="y">брокеры</td><td class="y">брокеры</td></tr>
+        <tr><td>Безопасность данных</td><td class="no">только в FAQ</td><td class="no">только в FAQ</td><td class="no">нет</td><td class="y">отдельный блок</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="pair">
+    <div>
+      <h3>Что у Traders Care уже есть</h3>
+      <ul>
+        <li><strong>Доступ только на чтение.</strong> Инвесторский пароль, шифрование, основной пароль не нужен — готовый текст лежит в FAQ.</li>
+        <li><strong>Цифры брокера нельзя подделать</strong>, опубликованные результаты проверяются.</li>
+        <li><strong>Каталог из 11 проп-фирм</strong> с проверенными правилами и датой сверки — сильная страница, которой на лендинге отведена одна кнопка.</li>
+        <li><strong>Украинский и русский</strong> — у конкурентов только английский.</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Чего не хватает</h3>
+      <ul>
+        <li>Логотипов платформ: MetaTrader 4/5, cTrader, Match-Trader, DXtrade.</li>
+        <li>Цифр продукта: сделок в журналах, счетов под контролем, фирм в каталоге.</li>
+        <li>Отзывов или хотя бы проверенных карточек результатов пользователей.</li>
+        <li>Контактов и соцсетей в футере.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="mobile">
+  <div class="col">
+    <div class="kick">Мобильная версия</div>
+    <h2>На телефоне путь к регистрации длиннее, чем нужно</h2>
+  </div>
+  <figure class="fig-narrow">
+    <img src="img/mobile.webp" alt="Мобильная версия: шапка в две строки и меню с тремя ссылками" width="800" height="844">
+    <figcaption>iPhone, 390 px. Слева — первый экран, справа — открытое меню.</figcaption>
+  </figure>
+  <div class="finds">
+    <div class="f"><span class="sev i">Важно</span><p><strong>Шапка в две строки</strong>Логотип сверху, под ним тема, язык, меню и «Войти» — 85 px экрана уходят на навигацию.</p></div>
+    <div class="f"><span class="sev i">Важно</span><p><strong>В меню три ссылки и ничего больше</strong>Нет «Начать бесплатно», «Войти», тарифов и выбора языка.</p></div>
+    <div class="f"><span class="sev i">Важно</span><p><strong>Шапка не липкая</strong>После первого экрана кнопки действия нет до конца блока тарифов. То же на десктопе.</p></div>
+    <div class="f"><span class="sev i">Важно</span><p><strong>Мелкие зоны нажатия</strong>Переключатель темы 32×32, язык 63×28, меню 36×36, «Войти» 70×36, ссылки в футере высотой 21 px. Рекомендуемый минимум — 44×44.</p></div>
+    <div class="f"><span class="sev l">Улучшение</span><p><strong>Однообразная прокрутка</strong>4 050 px страницы — это шесть одинаковых карточек функций и четыре тарифа подряд. Кнопки hero стоят стопкой разной ширины.</p></div>
+  </div>
+</section>
+
+<section id="rivals">
+  <div class="col">
+    <div class="kick">Конкуренты</div>
+    <h2>Что взять и чего избегать</h2>
+    <p class="intro">Первые экраны на ширине 1440 px. TraderSync не вошёл в сравнение: сайт закрыт проверкой Cloudflare.</p>
+  </div>
+  <div class="rivals">
+    <div class="rival">
+      <img src="img/rival-scope360.webp" alt="Первый экран Scope360" width="960" height="600">
+      <h3>Scope360</h3>
+      <dl>
+        <dt>Взять</dt><dd>Крупный экран продукта прямо под заголовком, тур по продукту вкладками, форма подключения счёта на лендинге, таблица «мы и другие».</dd>
+        <dt>Избегать</dt><dd>Блоков, которые появляются только при прокрутке: без неё на странице видны пустые экраны.</dd>
+      </dl>
+    </div>
+    <div class="rival">
+      <img src="img/rival-tradezella.webp" alt="Первый экран Tradezella" width="960" height="600">
+      <h3>Tradezella</h3>
+      <dl>
+        <dt>Взять</dt><dd>Цифры масштаба и логотипы брокеров сразу под первым экраном, отдельный сценарий «пройди челлендж — сохрани funded-счёт».</dd>
+        <dt>Избегать</dt><dd>Перегруза: шесть продуктов, агенты, университет. Фиолетово-розовые градиенты и теги-пилюли — тот же шаблонный облик.</dd>
+      </dl>
+    </div>
+    <div class="rival">
+      <img src="img/rival-edgewonk.webp" alt="Первый экран Edgewonk" width="960" height="600">
+      <h3>Edgewonk</h3>
+      <dl>
+        <dt>Взять</dt><dd>Блок «Что мешает тебе сейчас» по стадиям трейдера, каждое утверждение подкреплено настоящим графиком, отдельный блок безопасности.</dd>
+        <dt>Избегать</dt><dd>Зелёного как маркетингового цвета: в Traders Care зелёный означает прибыль. Таймера «предложение заканчивается».</dd>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<section id="tech">
+  <div class="col">
+    <div class="kick">Техника, доступность, SEO</div>
+    <h2>Что проверили автоматически</h2>
+    <p class="intro">Съёмка в Chrome, проверка доступности axe-core 4.10 в обеих темах, разбор HTML и метатегов трёх языковых версий.</p>
+  </div>
+  <div class="finds">
+    <div class="f"><span class="sev c">Критично</span><p><strong>Ссылка в соцсетях выходит без картинки</strong>Картинка превью существует (1200×630), но в метатегах на неё нет ссылки. Поделиться лендингом в Telegram, X или Discord — значит получить голый текст. К тому же текст на картинке только русский.</p></div>
+    <div class="f"><span class="sev i">Важно</span><p><strong>Русская и украинская версии в 7 раз тяжелее английской</strong>HTML 481 КБ против 70 КБ: в страницу вшит словарь переводов всего приложения — около 3 100 строк, которых на лендинге нет.</p></div>
+    <div class="f"><span class="sev i">Важно</span><p><strong>950 КБ на странице без единой картинки</strong>655 КБ CSS — стили всего приложения — и 617 КБ шрифтов. Для сравнения: Edgewonk со всеми скриншотами весит 807 КБ.</p></div>
+    <div class="f"><span class="sev i">Важно</span><p><strong>Недостаточный контраст текста</strong>Недоступные функции в тарифах — 2.58 : 1, юридический дисклеймер о рисках — 2.99–3.17 : 1. Норма WCAG AA — 4.5 : 1.</p></div>
+    <div class="f"><span class="sev l">Улучшение</span><p><strong>Нет структурированных данных</strong>Без разметки Organization, SoftwareApplication с ценами и FAQPage сайт не получает расширенных сниппетов в Google. og:url одинаковый для всех языков, twitter:site — не аккаунт.</p></div>
+    <div class="f"><span class="sev l">Улучшение</span><p><strong>Страница не кэшируется</strong>Каждый визит рендерится на сервере заново, хотя лендинг почти статичен.</p></div>
+  </div>
+  <div class="og">
+    <img src="img/og.webp" alt="Существующая картинка превью Traders Care" width="600" height="315">
+    <p class="muted" style="margin:0">Эта картинка уже лежит на сервере по адресу /opengraph-image — её достаточно подключить. В редизайне стоит сделать её на трёх языках и с экраном продукта.</p>
+  </div>
+  <p class="col muted" style="margin-top:22px;font-size:14.5px">В порядке: скорость отрисовки (LCP около 0.3 с — правда, потому что на странице почти ничего нет), видимый фокус с клавиатуры, hreflang для трёх языков, canonical, sitemap, автоматический выбор языка по браузеру.</p>
+</section>
+
+<section id="plan">
+  <div class="col">
+    <div class="kick">Что делать</div>
+    <h2>Сначала исправить, потом перестроить</h2>
+    <p class="intro">Четыре правки занимают около часа работы разработчика и не зависят от редизайна.</p>
+  </div>
+  <div class="quick">
+    <div><h3>Тарифы</h3><p>Free — 1 счёт, Pro — топовая модель, как в FAQ.</p></div>
+    <div><h3>Превью ссылки</h3><p>Подключить уже существующую картинку в og:image.</p></div>
+    <div><h3>Контраст</h3><p>Дисклеймер и недоступные функции — до 4.5 : 1.</p></div>
+    <div><h3>Вес страницы</h3><p>Не загружать словарь всего приложения на публичные страницы.</p></div>
+  </div>
+  <div class="col" style="margin-top:48px">
+    <h3>Каркас нового лендинга</h3>
+    <p class="muted">Порядок, в котором посетитель получает ответы. Детальную структуру и тексты согласуем на следующем этапе.</p>
+  </div>
+  <ol class="flow">
+    <li><span><b>Обещание и экран продукта.</b> Для кого и какой результат — и сразу интерфейс.</span></li>
+    <li><span><b>Доверие.</b> Платформы, число фирм в каталоге, «доступ только на чтение».</span></li>
+    <li><span><b>Боль проп-трейдера.</b> Живой контроль просадки и consistency на настоящем виджете.</span></li>
+    <li><span><b>Как это работает.</b> Подключил счёт — сделки пришли сами — видишь цену каждого отступления.</span></li>
+    <li><span><b>Продукт по частям.</b> Журнал, статистика, торговая система, разборы, ИИ — три-четыре крупные сцены разной композиции вместо шести одинаковых карточек.</span></li>
+    <li><span><b>Проверяемые результаты.</b> Верифицированная карточка сделки.</span></li>
+    <li><span><b>Входные двери.</b> Каталог проп-фирм и бесплатные калькуляторы.</span></li>
+    <li><span><b>Безопасность и оплата.</b> Инвесторский пароль, шифрование, криптовалюта без автосписаний.</span></li>
+    <li><span><b>Тарифы.</b> Кнопка на каждой карточке и честное сравнение с рынком.</span></li>
+    <li><span><b>Вопросы.</b> Пять-шесть главных возражений.</span></li>
+    <li><span><b>Финальный призыв.</b></span></li>
+  </ol>
+  <p class="col muted" style="margin-top:22px">Плюс по всей странице: липкая шапка с кнопкой, полноценное мобильное меню, шрифт с веб-лицензией, визуал без шаблонных приёмов, три языка и обе темы.</p>
+</section>
+
+<footer>
+  <span>Проверено: RU, EN и UK версии, ширины 1440 и 390 px, тёмная и светлая темы.</span>
+  <span>Сравнение: Scope360, Tradezella, Edgewonk. Цены конкурентов — с их сайтов на 26 сентября 2026.</span>
+</footer>
+
+</div>
