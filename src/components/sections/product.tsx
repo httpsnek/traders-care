@@ -91,8 +91,8 @@ export function Product({ t, locale }: { t: Dictionary["product"]; locale: Local
           </div>
         </div>
 
-        {/* Ниже lg: аккордеон, экран внутри раскрытого пункта */}
-        <div role="tablist" aria-label={t.listLabel} aria-orientation="vertical" onKeyDown={onKey(mobTabs)} className="mt-14 flex flex-col lg:hidden">
+        {/* Ниже lg: аккордеон (разметка аккордеона, а не вкладок), экран внутри раскрытого пункта */}
+        <div aria-label={t.listLabel} role="group" className="mt-14 flex flex-col lg:hidden">
           {t.tabs.map((tab, i) => {
             const on = i === active;
             return (
@@ -100,13 +100,13 @@ export function Product({ t, locale }: { t: Dictionary["product"]; locale: Local
                 <span aria-hidden className={`absolute inset-y-4 left-0 w-[2px] rounded-full transition-colors duration-200 ${on ? "bg-lp-accent" : "bg-transparent"}`} />
                 <button
                   ref={(el) => { mobTabs.current[i] = el; }}
-                  type="button" role="tab" id={`product-tab-m-${i}`} aria-selected={on} aria-controls="product-panel-m" tabIndex={on ? 0 : -1}
+                  type="button" id={`product-tab-m-${i}`} aria-expanded={on} aria-controls={`product-panel-m-${i}`}
                   onClick={() => setActive(i)}
                   className={`flex w-full items-center justify-between py-5 pl-5 text-left font-display text-[20px] font-medium tracking-[-0.01em] transition-colors duration-200 ${on ? "text-lp-text" : "text-lp-muted"}`}>
                   <span>{tab.title}<span className="mt-0.5 block font-sans text-[14px] font-normal text-lp-muted">{tab.hint}</span></span>
                 </button>
                 {on && (
-                  <div id="product-panel-m" role="tabpanel" aria-labelledby={`product-tab-m-${i}`} className="pb-6 pl-5">
+                  <div id={`product-panel-m-${i}`} role="region" aria-labelledby={`product-tab-m-${i}`} className="pb-6 pl-5">
                     <p className="max-w-[46ch] text-lp-body text-lp-text-2">{tab.text}</p>
                     <div className="mt-6">{card(`m${i}`)}</div>
                   </div>

@@ -29,7 +29,7 @@ const gapUpto = (p: number) => {
   return `${top}${tail}${idx.reverse().map((i) => `L${gx(i).toFixed(1)},${gy(FACT[i]).toFixed(1)}`).join("")}Z`;
 };
 const money = (n: number, en: boolean) => `−$${en ? Math.round(n).toLocaleString("en-US") : Math.round(n).toLocaleString("ru").replace(/\s/g, " ")}`;
-const OFF_MAX = 1120; // самая дорогая категория — полоса во всю ширину
+const OFF_MAX = 910; // самая дорогая категория (после 16:00) — полоса во всю ширину. Разбивка = чек в «Как это работает».
 
 const Card = ({ className = "", children }: { className?: string; children: React.ReactNode }) => (
   <div className={`rounded-[7px] border border-lp-line/80 bg-lp-raised ${className}`}>{children}</div>
@@ -44,8 +44,8 @@ export function LaptopScreen({ t, p, onReplay, compact = false }: { t: T; p: num
   return (
     <div className="relative size-full overflow-hidden rounded-t-[6px] bg-lp-ground text-[9px] leading-none text-lp-text">
       {/* Строка меню macOS и «чёлка» */}
-      <div className="relative flex items-center justify-between bg-[#1c1c20] px-[10px] text-[8px] text-white/85" style={{ height: NOTCH.h }}>
-        <span className="font-semibold text-white">Traders Care</span>
+      <div className="relative flex items-center justify-between bg-[#1c1c20] px-[10px] text-[8px] text-white/85 [[data-theme=light]_&]:bg-[#e6e7eb] [[data-theme=light]_&]:text-black/75" style={{ height: NOTCH.h }}>
+        <span className="font-semibold text-white [[data-theme=light]_&]:text-black">Traders Care</span>
         <span className="flex items-center gap-[8px]">
           <Search size={8} strokeWidth={2.2} /><Wifi size={9} strokeWidth={2.2} /><BatteryFull size={11} strokeWidth={1.8} />
           <span className="tabular-nums">14:32</span>
@@ -85,33 +85,33 @@ export function LaptopScreen({ t, p, onReplay, compact = false }: { t: T; p: num
             <div className="mt-[10px] flex justify-between text-[17px] text-lp-text/45">{t.months.map((m) => <span key={m}>{m}</span>)}</div>
           </div>
           <div className={`mt-[18px] grid grid-cols-2 gap-[24px] text-[19px] ${fade}`}>
-            <div><div className="flex items-center gap-[8px] text-lp-text/55"><span className="h-[3px] w-[22px] bg-lp-text" />{t.fact}</div><div className="mt-[6px] font-display text-[34px] font-semibold text-lp-profit">{t.factValue}</div></div>
-            <div><div className="flex items-center gap-[8px] text-lp-text/55"><span className="w-[22px] border-t-[3px] border-dashed border-lp-accent" />{t.rules}</div><div className="mt-[6px] font-display text-[34px] font-semibold text-lp-profit">{t.rulesValue}</div></div>
+            <div><div className="flex items-center gap-[8px] text-lp-text/70"><span className="h-[3px] w-[22px] bg-lp-text" />{t.fact}</div><div className="mt-[6px] font-display text-[34px] font-semibold text-lp-profit">{t.factValue}</div></div>
+            <div><div className="flex items-center gap-[8px] text-lp-text/70"><span className="w-[22px] border-t-[3px] border-dashed border-lp-accent" />{t.rules}</div><div className="mt-[6px] font-display text-[34px] font-semibold text-lp-profit">{t.rulesValue}</div></div>
           </div>
         </div>
       ) : (
       <div className="flex" style={{ height: SCREEN_H - NOTCH.h }}>
         {/* Боковое меню */}
-        <aside className="flex w-[128px] shrink-0 flex-col border-r border-lp-line/80 bg-lp-raised/60 px-[8px] py-[12px]">
+        <div className="flex w-[128px] shrink-0 flex-col border-r border-lp-line/80 bg-lp-raised/60 px-[8px] py-[12px]">
           <div className="flex items-center gap-[6px] px-[6px]">
             <svg viewBox="0 0 64 64" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="6" aria-hidden className="text-lp-text">
               <path d="M51 17C46.5 11.6 40 8.5 32 8.5C19 8.5 8.5 19 8.5 32C8.5 45 19 55.5 32 55.5C40 55.5 46.5 52.4 51 47" /><path d="M21 24.5H55" /><path d="M38 24.5V44" />
             </svg>
             <span className="font-display text-[10.5px] font-semibold tracking-[-0.01em]">Traders Care</span>
           </div>
-          <nav className="mt-[16px] flex flex-col gap-[2px]">
+          <div className="mt-[16px] flex flex-col gap-[2px]">
             {s.nav.map((n, i) => (
               <span key={n} className={`rounded-[5px] px-[6px] py-[5.5px] ${i === 0 ? "bg-lp-text/[0.07] text-lp-text" : "text-lp-text/55"}`}>{n}</span>
             ))}
-          </nav>
+          </div>
           <div className="mt-auto rounded-[6px] border border-lp-line/80 px-[7px] py-[7px]">
             <div className="text-[8.5px] font-medium">{s.account}</div>
             <div className="mt-[5px] flex items-center gap-[4px] text-[7.5px] text-lp-text/50"><span className="size-[4px] shrink-0 rounded-full bg-lp-profit" /><span className="truncate">{s.synced}</span></div>
           </div>
-        </aside>
+        </div>
 
         {/* Обзор квартала */}
-        <main className="flex min-w-0 flex-1 flex-col gap-[9px] px-[14px] py-[12px]">
+        <div className="flex min-w-0 flex-1 flex-col gap-[9px] px-[14px] py-[12px]">
           <div className="flex items-center justify-between">
             <span className="font-display text-[13px] font-semibold tracking-[-0.01em]">{t.period}</span>
             <span className="flex items-center gap-[8px]">
@@ -219,7 +219,7 @@ export function LaptopScreen({ t, p, onReplay, compact = false }: { t: T; p: num
               </tbody>
             </table>
           </Card>
-        </main>
+        </div>
       </div>
       )}
     </div>

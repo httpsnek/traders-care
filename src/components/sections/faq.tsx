@@ -26,7 +26,7 @@ export function Faq({ t }: { t: Dictionary["faq"] }) {
             <h2 id="faq-title" className="text-lp-h2 text-lp-text">{t.title}</h2>
             <p className="mt-5 max-w-[30ch] text-lp-body text-lp-text-2">
               {t.contact}{" "}
-              <a href={LINKS.telegram} className="text-lp-text underline decoration-lp-text/25 underline-offset-[5px] transition-colors hover:decoration-lp-accent">{t.contactLink}</a>.
+              <a href={LINKS.telegram} className="relative text-lp-text before:absolute before:-inset-x-1 before:-inset-y-3 before:content-[''] underline decoration-lp-text/25 underline-offset-[5px] transition-colors hover:decoration-lp-accent">{t.contactLink}</a>.
             </p>
           </div>
 
@@ -38,7 +38,7 @@ export function Faq({ t }: { t: Dictionary["faq"] }) {
                 return (
                   <li key={it.q} className="border-b border-lp-line">
                     <h3>
-                      <button type="button" aria-expanded={on} aria-controls={id} onClick={() => toggle(i)}
+                      <button type="button" id={`${id}-q`} aria-expanded={on} aria-controls={id} onClick={() => toggle(i)}
                         className="group flex w-full items-center justify-between gap-6 py-6 text-left">
                         <span className={`font-display text-[clamp(19px,1.7vw,24px)] font-medium leading-snug tracking-[-0.015em] transition-colors duration-200 ${on ? "text-lp-text" : "text-lp-text-2 group-hover:text-lp-text"}`}>{it.q}</span>
                         <span className={`inline-flex size-9 shrink-0 items-center justify-center rounded-full border transition-colors duration-300 ${on ? "border-lp-accent bg-lp-accent text-lp-on-accent" : "border-lp-line text-lp-text-2 group-hover:border-lp-text/40"}`}>
@@ -46,7 +46,7 @@ export function Faq({ t }: { t: Dictionary["faq"] }) {
                         </span>
                       </button>
                     </h3>
-                    <div id={id} role="region" className={`grid transition-[grid-template-rows] duration-500 ease-lp motion-reduce:transition-none ${on ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}>
+                    <div id={id} role="region" aria-labelledby={`${id}-q`} className={`grid transition-[grid-template-rows] duration-500 ease-lp motion-reduce:transition-none ${on ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}>
                       <div className="overflow-hidden">
                         <p className="max-w-[62ch] pb-7 pr-14 text-lp-body text-lp-text-2">{it.a}</p>
                       </div>

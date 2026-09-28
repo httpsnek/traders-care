@@ -162,7 +162,7 @@ export function FirmTools({ t, links }: { t: T; links: string[] }) {
                   </span>
                 </button>
                 <a href={links[i]} aria-label={`${t.open}: ${it.t}`}
-                  className={`absolute right-0 top-5 inline-flex items-center gap-1 text-[13px] transition-colors duration-200 ${on ? "text-lp-text hover:text-lp-accent" : "text-lp-muted hover:text-lp-text"}`}>
+                  className={`absolute right-0 top-5 inline-flex items-center gap-1 text-[13px] before:absolute before:-inset-3 before:content-[''] transition-colors duration-200 ${on ? "text-lp-text hover:text-lp-accent" : "text-lp-muted hover:text-lp-text"}`}>
                   {t.open}<ArrowUpRight size={15} strokeWidth={1.75} aria-hidden />
                 </a>
               </li>
@@ -171,7 +171,7 @@ export function FirmTools({ t, links }: { t: T; links: string[] }) {
         </ul>
       </div>
 
-      <figure className="lg:col-span-6 lg:col-start-7 lg:pt-2">
+      <figure className="relative lg:col-span-6 lg:col-start-7 lg:pt-2">
         <div key={active} className="phone-swap">
           {active === 0 && <Scenarios t={t} />}
           {active === 1 && <Consistency t={t} />}

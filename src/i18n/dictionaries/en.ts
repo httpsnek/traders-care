@@ -29,7 +29,7 @@ export const en: Dictionary = {
     lead: "A journal synced with MetaTrader, cTrader, Match-Trader and DXtrade, live prop firm rules, and the exact cost of your mistakes.",
     primary: "Start free",
     secondary: "How it works",
-    facts: ["1 account free", "Read-only access", "No card"],
+    facts: ["1 account free", "Sync from $17", "No card"],
     visual: {
       period: "Equity · Q3",
       demo: "Sample data",
@@ -51,7 +51,7 @@ export const en: Dictionary = {
         tradesValue: "96",
         adherenceValue: "85%",
         offTitle: "Outside the system",
-        off: [["Entry without setup", "5", "−$1,120"], ["Moved the stop", "4", "−$690"], ["Risk above plan", "3", "−$380"], ["Trade after limit", "2", "−$150"]],
+        off: [["No-confirmation entry", "5", "−$640"], ["Trade after 16:00", "6", "−$910"], ["Risk above 1%", "2", "−$520"], ["Stop moved", "1", "−$270"]],
         lastTitle: "Recent trades",
         last: [["XAUUSD", "Long", "+2.4R", "+$825", ""], ["EURUSD", "Short", "−1.0R", "−$210", "off-system"], ["NAS100", "Long", "+1.3R", "+$460", ""]],
         synced: "Synced 2 min ago",
@@ -373,7 +373,7 @@ export const en: Dictionary = {
     title: "See what the past ones cost.",
     lead: "Connect your account — Traders Care pulls in your trade history and shows the cost of every deviation from your system.",
     cta: "Start free",
-    note: "1 account free · No card · Read-only access",
+    note: "1 account free · Sync from $17 · No card",
     tablet: { time: "6:42", date: "Monday, September 28", app: "Traders Care", now: "now", title: "Quarter summary", body: "14 trades outside the system cost −$2,340" },
   },
   trust: {

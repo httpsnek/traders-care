@@ -57,17 +57,15 @@ export function Pricing({ t }: { t: Dictionary["pricing"] }) {
                     <dt className="text-[13px] text-lp-muted">{t.rowLabels[1]}</dt>
                     <dd className={`text-[15px] ${rec ? "text-lp-text" : "text-lp-text-2"}`}>{p.sync}</dd>
                   </div>
-                  <div className="border-b border-lp-line py-3">
-                    <div className="grid grid-cols-[1fr_auto] items-baseline">
-                      <dt className="text-[13px] text-lp-muted">{t.rowLabels[2]}</dt>
-                      <dd className={`text-[15px] ${rec ? "text-lp-text" : "text-lp-text-2"}`}>{p.ai}</dd>
-                    </div>
-                    {/* Уровень ИИ — три риски, как деления прибора */}
-                    <div aria-hidden className="mt-2.5 flex gap-1">
+                  <div className="grid grid-cols-[1fr_auto] items-baseline border-b border-lp-line py-3">
+                    <dt className="text-[13px] text-lp-muted">{t.rowLabels[2]}</dt>
+                    <dd className={`text-[15px] ${rec ? "text-lp-text" : "text-lp-text-2"}`}>{p.ai}</dd>
+                    {/* Уровень ИИ — три риски, как деления прибора (dd внутри той же группы — корректный список определений) */}
+                    <dd aria-hidden className="col-span-2 mt-2.5 flex gap-1">
                       {[1, 2, 3].map((k) => (
                         <span key={k} className={`h-[3px] flex-1 rounded-full ${k <= i ? (rec ? "bg-lp-accent" : "bg-lp-text/55") : "bg-lp-text/10"}`} />
                       ))}
-                    </div>
+                    </dd>
                   </div>
                   <div className="grid grid-cols-[1fr_auto] items-baseline border-b border-lp-line py-3">
                     <dt className="text-[13px] text-lp-muted">{t.rowLabels[3]}</dt>

@@ -184,7 +184,7 @@ export function VerifyProof({ t, locale }: { t: T; locale: Locale }) {
                 {COLS.map((c, i) => <span role="columnheader" key={i} className={PHONE_HIDDEN.includes(i) ? "max-sm:hidden" : ""}>{c}</span>)}
               </div>
               {ROWS.map((row, r) => (
-                <div role="row" key={row[0]} className={`${GRID} py-2.5 ${r === MATCH_ROW ? "bg-lp-accent/[0.06] text-lp-text" : "text-lp-muted/70"}`}>
+                <div role="row" key={row[0]} className={`${GRID} py-2.5 ${r === MATCH_ROW ? "bg-lp-accent/[0.06] text-lp-text" : "text-lp-muted"}`}>
                   {row.map((cell, c) => {
                     const k = r === MATCH_ROW ? MATCH_COLS.indexOf(c) : -1;
                     return (

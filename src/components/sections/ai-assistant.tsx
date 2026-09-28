@@ -36,7 +36,7 @@ function Answer({ text, active, onRef }: { text: string; active: number; onRef: 
     const mark = (
       <button key={`b${k}`} type="button" aria-pressed={active === n} aria-label={`[${n + 1}]`}
         onMouseEnter={() => onRef(n)} onFocus={() => onRef(n)} onClick={() => onRef(n)}
-        className={`relative -top-[0.55em] ml-[2px] rounded-[4px] px-[4px] py-[1px] font-mono text-[12px] leading-none transition-colors duration-200 ${active === n ? "bg-lp-accent text-lp-on-accent" : "text-lp-accent hover:bg-lp-accent/15"}`}>
+        className={`relative -top-[0.55em] ml-[2px] rounded-[4px] before:absolute before:content-[''] before:-inset-[12px] px-[4px] py-[1px] font-mono text-[12px] leading-none transition-colors duration-200 ${active === n ? "bg-lp-accent text-lp-on-accent" : "text-lp-accent hover:bg-lp-accent/15"}`}>
         {n + 1}
       </button>
     );
@@ -95,7 +95,7 @@ export function AiAssistant({ t }: { t: Dictionary["ai"] }) {
         {t.qa.map((item, i) => (i === q ? null : (
           <li key={item.q}>
             <button type="button" onClick={() => ask(i)}
-              className="text-left text-[16px] leading-snug text-lp-text-2 underline decoration-lp-text/20 underline-offset-[5px] transition-colors duration-200 hover:text-lp-text hover:decoration-lp-accent">
+              className="relative text-left text-[16px] leading-snug text-lp-text-2 before:absolute before:content-[''] before:-inset-y-3 before:inset-x-0 underline decoration-lp-text/20 underline-offset-[5px] transition-colors duration-200 hover:text-lp-text hover:decoration-lp-accent">
               {item.q}
             </button>
           </li>

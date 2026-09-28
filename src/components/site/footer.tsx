@@ -17,7 +17,7 @@ export function Footer({ t, locale, themeLabels }: {
   t: Dictionary["footer"]; locale: Locale; themeLabels: { toLight: string; toDark: string };
 }) {
   return (
-    <footer className="border-t border-lp-line">
+    <footer className="overflow-x-clip border-t border-lp-line">
       <Container className="pb-10 pt-16 lg:pt-20">
         <div className="grid gap-12 lg:grid-cols-12 lg:gap-6">
           <div className="lg:col-span-4">
@@ -31,7 +31,7 @@ export function Footer({ t, locale, themeLabels }: {
                 <ul className="mt-4 grid gap-3">
                   {c.links.map((l) => (
                     <li key={l.label}>
-                      <a href={href(l.href)} className="break-words text-[15px] text-lp-text-2 transition-colors duration-200 hover:text-lp-text">{l.label}</a>
+                      <a href={href(l.href)} className="relative break-words text-[15px] before:absolute before:content-[''] before:-inset-x-2 before:-inset-y-2.5 text-lp-text-2 transition-colors duration-200 hover:text-lp-text">{l.label}</a>
                     </li>
                   ))}
                 </ul>

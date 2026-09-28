@@ -50,7 +50,7 @@ export function ProductIpad({ tabs, active, onSelect, synced, demo, children }: 
           <aside aria-hidden className="flex w-[196px] shrink-0 flex-col border-r border-lp-line bg-lp-raised/60 px-3 pb-4 pt-[40px]">
             <div className="px-2 font-display text-[15px] font-semibold tracking-[-0.01em]">Traders Care</div>
             <div className="mt-0.5 px-2 text-[11px] text-lp-muted">Prop 100K · Phase 1</div>
-            <nav className="mt-6 flex flex-col gap-0.5">
+            <div className="mt-6 flex flex-col gap-0.5">
               {tabs.map((label, i) => {
                 const Icon = NAV_ICONS[i];
                 const on = i === active;
@@ -61,19 +61,19 @@ export function ProductIpad({ tabs, active, onSelect, synced, demo, children }: 
                   </button>
                 );
               })}
-            </nav>
+            </div>
             <div className="mt-auto flex items-center gap-2 px-2 text-[11px] text-lp-muted">
               <span className="h-[6px] w-[6px] shrink-0 rounded-full bg-lp-accent" />{synced}
             </div>
           </aside>
 
-          <main className="flex min-w-0 flex-1 flex-col pt-[26px]">
+          <div className="flex min-w-0 flex-1 flex-col pt-[26px]">
             <div className="flex items-baseline justify-between px-6 pb-3 pt-4">
               <span className="font-display text-[20px] font-semibold tracking-[-0.02em]">{tabs[active]}</span>
               <span className="text-[11px] text-lp-muted">{demo}</span>
             </div>
             <div key={active} className="phone-swap min-h-0 flex-1 px-6 pb-6 [&>*]:h-full">{children}</div>
-          </main>
+          </div>
 
           {/* Лёгкий блик стекла поверх интерфейса */}
           <div aria-hidden className="pointer-events-none absolute inset-0 bg-[linear-gradient(120deg,rgb(255_255_255/0.05)_0%,rgb(255_255_255/0)_40%)]" />
