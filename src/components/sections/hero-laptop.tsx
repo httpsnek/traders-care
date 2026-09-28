@@ -25,9 +25,11 @@ const src = (i: number, mobile: boolean) => `/media/hero/${mobile ? "lid-m" : "l
 // Стекло экрана в последнем кадре, в долях кадра: TL, TR, BR, BL (замер по кадру 143, 1920×1080).
 const SCREEN = [[548.75, 113], [1373.75, 113], [1373.75, 647], [548.75, 647]].map(([x, y]) => [x / 1920, y / 1080]);
 
-// Фазы прокрутки (доля пути секции).
-const DESK = { open: 0.78, textFrom: 0.02, textTo: 0.3 };
-const MOB = { open: 0.5, zoomFrom: 0.56, zoomTo: 0.86, textFrom: 0.52, textTo: 0.72 };
+// Фазы прокрутки (доля пути секции). После открытия (и наезда на телефоне) — пауза ~0,8 экрана:
+// сцена стоит, график на экране успевает дорисоваться, и его не пролистывают.
+// Десктоп: путь 200svh — крышка 0–0,6, пауза 0,6–1. Телефон: путь 190svh — крышка 0–0,34, наезд 0,38–0,58, пауза 0,58–1.
+const DESK = { open: 0.6, textFrom: 0.02, textTo: 0.23 };
+const MOB = { open: 0.34, zoomFrom: 0.38, zoomTo: 0.58, textFrom: 0.35, textTo: 0.49 };
 const WEEK_MS = 230; // квартал на экране прорисовывается за ~3 с
 
 const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
@@ -200,7 +202,7 @@ export function HeroLaptop({ t, children }: { t: Dictionary["hero"]["visual"]; c
 
   const edge = "pointer-events-none absolute from-[#0b0b0d] to-transparent";
   return (
-    <div ref={section} className="lp-dark relative h-[230svh] bg-[#0b0b0d] lg:h-[250svh] motion-reduce:h-auto" role="img" aria-label={t.aria}>
+    <div ref={section} className="lp-dark relative h-[290svh] bg-[#0b0b0d] lg:h-[300svh] motion-reduce:h-auto" role="img" aria-label={t.aria}>
       <div ref={pin} className="sticky top-header flex h-[calc(100svh-var(--lp-header-h))] flex-col overflow-hidden motion-reduce:static motion-reduce:h-auto">
         <div ref={textRef} className="relative z-10 shrink-0 lg:absolute lg:inset-x-0 lg:top-[clamp(20px,5svh,56px)]">{children}</div>
 

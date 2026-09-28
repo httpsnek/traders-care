@@ -1,4 +1,3 @@
-import { Check, X } from "lucide-react";
 import Image from "next/image";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n";
@@ -16,6 +15,21 @@ const KEY = { inY: 44.2, inX: 10.9, outY: 41.6, outX: 87.35, bladeTop: 34 };
 // (1660×820 при ширине 54 % → пропорция контейнера 3.748 : 1). at() переводит % картинки в % контейнера.
 const IMG = { left: 23, width: 54 }; // ключ по центру контейнера
 const at = (xInImg: number) => +(IMG.left + (xInImg * IMG.width) / 100).toFixed(3);
+// Мобильная схема: рамка W×H (условные единицы), ключ повёрнут на 90° по часовой: точка (x, y) картинки → (1 − y, x).
+const KEY_ASPECT = 1660 / 820;
+const M = (() => {
+  const W = 350, H = 385, keyW = 44, keyT = 7;
+  const keyH = (keyW * KEY_ASPECT * W) / H;              // высота рамки ключа, % высоты схемы
+  const px = (u: number) => u * keyW;                     // доля ширины ключа → % ширины схемы
+  const py = (v: number) => keyT + v * keyH;              // доля высоты ключа → % высоты схемы
+  const headU = 1 - KEY.inY / 100, keyL = 50 - px(headU); // головка ключа — ровно по центру
+  return {
+    W, H, keyW, keyH, keyT, keyL,
+    head: { x: 50, y: py(KEY.inX / 100) },
+    tip: { x: keyL + px(1 - KEY.outY / 100), y: py(KEY.outX / 100) },
+    blade: { x: keyL + px(1 - KEY.bladeTop / 100), y: [py(0.56), py(0.78)] },
+  };
+})();
 const BROKER_AT = 24;   // точка «Брокер» — зеркально APP_AT относительно ключа
 const APP_AT = 75;      // точка «Traders Care»
 
@@ -89,35 +103,48 @@ export function Verify({ t, locale }: { t: Dictionary["verify"]; locale: Locale 
           </div>
         </figure>
 
-        {/* Мобильный и планшет: вместо схемы с ключом — карточка прав доступа, как экран разрешений.
-            Что Traders Care может сделать со счётом и чего не может — читается за секунду. */}
-        <figure aria-label={d.aria} className="mt-9 overflow-hidden rounded-screen border border-lp-line bg-lp-raised lg:hidden">
-          <div className="flex items-center gap-3 border-b border-lp-line px-4 py-4">
-            <span className="min-w-0">
-              <span className="block font-display text-[17px] font-medium text-lp-text">{d.broker}</span>
-              <span className="block text-[12px] leading-snug text-lp-muted">MetaTrader · cTrader · Match-Trader · DXtrade</span>
-            </span>
-            <span aria-hidden className="relative mx-1 h-px min-w-[24px] flex-1 bg-lp-accent after:absolute after:-right-px after:-top-[3.5px] after:size-2 after:rotate-45 after:border-r after:border-t after:border-lp-accent" />
-            <span className="shrink-0 font-display text-[17px] font-medium text-lp-text">{d.app}</span>
+        {/* Схема — мобильный и планшет: та же схема, что на десктопе, но вертикально и по центру.
+            Ключ повёрнут на 90° по часовой: головка сверху, кончик снизу, бородка справа. Точки — из тех же замеров KEY,
+            пересчитанных в координаты рамки (все % — от ширины/высоты рамки, см. M ниже). */}
+        <figure aria-label={d.aria} className="mx-auto mt-10 w-full max-w-[400px] lg:hidden">
+          <div className="text-center">
+            <div className="font-display text-[20px] font-medium text-lp-text">{d.broker}</div>
+            <div className="mt-1 text-[12px] leading-snug text-lp-muted">MetaTrader · cTrader · Match-Trader · DXtrade</div>
           </div>
-          <ul className="divide-y divide-lp-line">
-            <li className="flex items-start gap-3 px-4 py-3.5">
-              <Check aria-hidden size={18} strokeWidth={2.2} className="mt-0.5 shrink-0 text-lp-accent" />
-              <span>
-                <span className="block text-[15px] text-lp-text">{d.read}</span>
-                <span className="mt-0.5 block text-[13px] text-lp-muted">{d.journal} · {d.card}</span>
+          <div aria-hidden className="relative mt-3 w-full" style={{ aspectRatio: `${M.W}/${M.H}` }}>
+            {/* Ключ: рамка 44 % ширины, картинка внутри повёрнута */}
+            <div className="absolute" style={{ left: `${M.keyL}%`, top: `${M.keyT}%`, width: `${M.keyW}%`, height: `${M.keyH}%` }}>
+              <div className={`absolute left-1/2 top-1/2 ${fade}`}
+                style={{ width: `${KEY_ASPECT * 100}%`, height: `${100 / KEY_ASPECT}%`, transform: "translate(-50%, -50%) rotate(90deg)" }}>{keyImg}</div>
+            </div>
+            {/* Брокер → головка */}
+            <span className="absolute w-[1.5px] -translate-x-1/2 bg-lp-accent" style={{ left: `${M.head.x}%`, top: 0, height: `${M.head.y}%` }} />
+            {/* Кончик → Traders Care */}
+            <span className="absolute w-[1.5px] -translate-x-1/2 bg-lp-accent" style={{ left: `${M.tip.x}%`, top: `${M.tip.y}%`, bottom: 0 }} />
+            {/* От бородки вправо — недоступные действия */}
+            {blocked.map((label, k) => (
+              <span key={label} className="absolute flex -translate-y-1/2 items-center" style={{ left: `${M.blade.x}%`, top: `${M.blade.y[k]}%`, right: 0 }}>
+                <span className="w-[14%] shrink-0 border-t border-dashed border-lp-text/35" />
+                <span className="ml-2 min-w-0 text-[13px] leading-tight text-lp-muted">
+                  <span className="block line-through decoration-lp-text/50">{label}</span>
+                  <span className="block text-[11px]">× {d.blocked}</span>
+                </span>
               </span>
-            </li>
-            {blocked.map((b) => (
-              <li key={b} className="flex items-center gap-3 px-4 py-3.5">
-                <X aria-hidden size={18} strokeWidth={2.2} className="shrink-0 text-lp-muted" />
-                <span className="text-[15px] text-lp-muted line-through decoration-lp-text/40">{b}</span>
-                <span className="ml-auto text-[12px] text-lp-muted">{d.blocked}</span>
-              </li>
             ))}
-          </ul>
-          <div className="border-t border-lp-line bg-lp-text/[0.02] px-4 py-3 text-[13px] text-lp-text-2">
-            <span className="font-medium text-lp-text">{d.key}</span> · {d.keySub}
+            {/* Подпись ключа — слева, на уровне бородки */}
+            <span className="absolute -translate-y-1/2 text-right" style={{ left: 0, width: `${M.keyL - 3}%`, top: `${(M.blade.y[0] + M.blade.y[1]) / 2}%` }}>
+              <span className="block text-[14px] font-medium leading-tight text-lp-text">{d.key}</span>
+              <span className="mt-1 block text-[11px] leading-snug text-lp-muted">{d.keySub}</span>
+            </span>
+          </div>
+          <div className="relative flex flex-col" style={{ paddingLeft: `${M.tip.x}%` }}>
+            <div className="-ml-[4.5px] flex items-center gap-3">
+              <span className="size-[9px] shrink-0 rounded-full bg-lp-accent" />
+              <span className="font-display text-[20px] font-medium text-lp-text">{d.app}</span>
+            </div>
+            <div className="ml-[-0.75px] mt-2 flex flex-col gap-1.5 border-l border-lp-text/35 py-1 pl-4 text-lp-small text-lp-text-2">
+              <span>{d.journal}</span><span>{d.card}</span>
+            </div>
           </div>
         </figure>
 
