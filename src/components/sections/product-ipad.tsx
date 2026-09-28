@@ -72,7 +72,7 @@ export function ProductIpad({ tabs, active, onSelect, synced, demo, children }: 
               <span className="font-display text-[20px] font-semibold tracking-[-0.02em]">{tabs[active]}</span>
               <span className="text-[11px] text-lp-muted">{demo}</span>
             </div>
-            <div key={active} className="phone-swap min-h-0 flex-1 px-6 pb-6 [&>*]:h-full">{children}</div>
+            <div key={active} className="screen-in min-h-0 flex-1 px-6 pb-6 [&>*]:h-full">{children}</div>
           </div>
 
           {/* Лёгкий блик стекла поверх интерфейса */}

@@ -1,4 +1,5 @@
 import { Check, Lock } from "lucide-react";
+import { CountUp } from "@/components/ui/reveal";
 import Image from "next/image";
 import type { Dictionary } from "@/i18n";
 import type { makeFormat } from "@/lib/format";
@@ -119,14 +120,14 @@ export function StatsScreen({ t, f }: { t: T; f: F }) {
         <div className="flex items-baseline justify-between">
           <span className="text-[14px] font-medium text-lp-text">Care Score</span>
           <span className="font-display text-[26px] font-medium tracking-[-0.02em] text-lp-text tabular-nums">
-            {total}<span className="text-[15px] text-lp-muted"> / 100</span>
+            <CountUp to={total} start format={(n) => String(Math.round(n))} duration={1.1} delay={0.25} /><span className="text-[15px] text-lp-muted"> / 100</span>
           </span>
         </div>
         <div className="mt-3 flex gap-[3px]">
           {SCORE.map((p, i) => (
             <div key={i} style={{ flexGrow: p.w }} className="basis-0">
               <div className="h-[6px] overflow-hidden rounded-full bg-lp-text/10">
-                <div className="h-full rounded-full bg-lp-accent" style={{ width: `${(p.v / p.w) * 100}%` }} />
+                <div data-grow className="h-full rounded-full bg-lp-accent" style={{ width: `${(p.v / p.w) * 100}%`, animationDelay: `${260 + i * 90}ms` }} />
               </div>
               <div className="mt-2 truncate text-[12px] text-lp-muted">{s.parts[i]}</div>
               <div className="text-[12px] text-lp-text-2 tabular-nums">{p.v}/{p.w}</div>
@@ -320,7 +321,7 @@ export function MistakesScreen({ t, f }: { t: T; f: F }) {
             <tr key={i} className="border-b border-lp-line">
               <th scope="row" className="py-3 pr-4 font-normal text-lp-text">
                 {m.rows[i]}
-                <span className="mt-1.5 block h-[3px] rounded-full bg-lp-loss/70" style={{ width: `${(x.usd / max) * 100}%` }} />
+                <span data-grow className="mt-1.5 block h-[3px] rounded-full bg-lp-loss/70" style={{ width: `${(x.usd / max) * 100}%` }} />
               </th>
               <td className="py-3 text-right text-lp-text-2">{x.n}</td>
               <td className="py-3 text-right text-lp-loss">{f.usd(-x.usd)}</td>

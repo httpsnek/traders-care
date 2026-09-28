@@ -3,6 +3,7 @@ import { APP_URL } from "@/i18n/config";
 import { ButtonLink } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
 import type { Material } from "./metal-card";
+import { Reveal } from "@/components/ui/reveal";
 import { PlanCard } from "./plan-card";
 
 // Блок 9 «Сравнение и тарифы» (docs/LANDING-SPEC.md, часть C). Без набора из 4 карточек с галочками:
@@ -13,6 +14,7 @@ import { PlanCard } from "./plan-card";
 // [ДАННЫЕ] Цены, лимиты, уровни ИИ, способ оплаты — подтвердить у клиента; переключатель Месяц/Год — когда будет годовая цена.
 
 const TC = 2; // индекс колонки Traders Care в сравнении
+const MONTH = 29, CELLS = 5; // шкала «цена ошибки»: ячейка = месяц тарифа Trader
 const REC = 2; // индекс рекомендуемого тарифа
 const PLAN_LINKS = ["free", "solo", "trader", "pro"].map((p) => `${APP_URL}/register?plan=${p}`);
 // Материал карты растёт вместе с тарифом: керамика → титан → фиолетовый анодированный алюминий (бренд) → графит.
@@ -37,12 +39,13 @@ export function Pricing({ t }: { t: Dictionary["pricing"] }) {
         {/* 2. Тарифы: карта (лицо — название и цена, по клику переворачивается — там характеристики гравировкой)
             + под картой «паспорт» тарифа: крупные значения вместо строк таблицы, строки выровнены по всем колонкам. */}
         {/* Телефон: карусель со свайпом — карта 84 % ширины, край следующей виден; с sm — сетка. */}
-        <div className="-mx-5 mt-10 flex snap-x snap-mandatory scroll-px-5 gap-4 overflow-x-auto px-5 pb-2 [scrollbar-width:none] sm:mx-0 sm:mt-14 sm:grid sm:snap-none sm:grid-cols-2 sm:gap-x-6 sm:gap-y-16 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-4 [&::-webkit-scrollbar]:hidden">
+        <Reveal amount={0.15} className="-mx-5 mt-10 flex snap-x snap-mandatory scroll-px-5 gap-4 overflow-x-auto px-5 pb-2 [scrollbar-width:none] sm:mx-0 sm:mt-14 sm:grid sm:snap-none sm:grid-cols-2 sm:gap-x-6 sm:gap-y-16 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-4 [&::-webkit-scrollbar]:hidden">
           {t.plans.map((p, i) => {
             const rec = i === REC;
             const specs: [string, string][] = [[t.rowLabels[0], p.accounts], [t.rowLabels[1], p.sync], [t.rowLabels[2], p.ai], [t.rowLabels[3], p.tokens]];
             return (
-              <div key={p.name} className="flex w-[84%] shrink-0 snap-start flex-col sm:w-auto">
+              <div key={p.name} style={{ transitionDelay: `${i * 90}ms` }}
+                className="flex w-[84%] shrink-0 snap-start flex-col translate-y-6 opacity-0 transition-[opacity,transform] duration-700 ease-lp group-data-[seen]/rv:translate-y-0 group-data-[seen]/rv:opacity-100 motion-reduce:translate-y-0 motion-reduce:opacity-100 motion-reduce:transition-none sm:w-auto">
                 <div className="mb-3 h-5 text-[13px] font-medium text-lp-accent">{rec ? t.recommended : ""}</div>
                 <PlanCard material={PLAN_CARD[i]} name={p.name} price={p.price} perMonth={t.perMonth} specs={specs}
                   flip={t.flip} flipBack={t.flipBack} sizes="(min-width: 1024px) 300px, (min-width: 640px) 45vw, 84vw" />
@@ -63,7 +66,10 @@ export function Pricing({ t }: { t: Dictionary["pricing"] }) {
                     {/* Уровень ИИ — три риски, как деления прибора (dd внутри той же группы — корректный список определений) */}
                     <dd aria-hidden className="col-span-2 mt-2.5 flex gap-1">
                       {[1, 2, 3].map((k) => (
-                        <span key={k} className={`h-[3px] flex-1 rounded-full ${k <= i ? (rec ? "bg-lp-accent" : "bg-lp-text/55") : "bg-lp-text/10"}`} />
+                        <span key={k} className="relative h-[3px] flex-1 overflow-hidden rounded-full bg-lp-text/10">
+                          {k <= i && <span className={`absolute inset-0 origin-left scale-x-0 rounded-full transition-transform duration-500 ease-lp group-data-[seen]/rv:scale-x-100 motion-reduce:scale-x-100 motion-reduce:transition-none ${rec ? "bg-lp-accent" : "bg-lp-text/55"}`}
+                            style={{ transitionDelay: `${500 + i * 90 + k * 160}ms` }} />}
+                        </span>
                       ))}
                     </dd>
                   </div>
@@ -77,7 +83,7 @@ export function Pricing({ t }: { t: Dictionary["pricing"] }) {
               </div>
             );
           })}
-        </div>
+        </Reveal>
                 <p className="mt-8 text-lp-small text-lp-text-2">{t.included}</p>
         <p className="mt-2 text-lp-small text-lp-muted">{t.payment}</p>
 
@@ -118,19 +124,33 @@ export function Pricing({ t }: { t: Dictionary["pricing"] }) {
             <h3 className="font-display text-[clamp(22px,2.2vw,30px)] font-medium leading-tight tracking-[-0.02em] text-lp-text">{t.value.title}</h3>
             <p className="mt-4 max-w-[44ch] text-lp-body text-lp-text-2">{t.value.text}</p>
           </div>
-          <figure className="lg:col-span-6 lg:col-start-7" aria-label={t.value.aria}>
-            {[{ label: t.value.sub, v: 29, cls: "bg-lp-accent", txt: "text-lp-text" }, { label: t.value.mistake, v: 128, cls: "bg-lp-loss", txt: "text-lp-loss" }].map((b) => (
-              <div key={b.label} className="mb-6 last:mb-0">
+          {/* Шкала в месяцах тарифа: 5 ячеек по $29. «Trader · месяц» — одна ячейка, одна ошибка ($128) — 4,4 ячейки.
+              При появлении заливка бежит по ячейкам слева направо. */}
+          <Reveal as="figure" amount={0.5} className="lg:col-span-6 lg:col-start-7" aria-label={t.value.aria}>
+            {[{ label: t.value.sub, v: 29, fill: "bg-lp-accent", txt: "text-lp-text", start: 0 },
+              { label: t.value.mistake, v: 128, fill: "bg-lp-loss", txt: "text-lp-loss", start: 350 }].map((b) => (
+              <div key={b.label} className="mb-7 last:mb-0">
                 <div className="flex items-baseline justify-between gap-4 text-[14px]">
                   <span className="text-lp-text-2">{b.label}</span>
                   <span className={`font-display text-[28px] font-medium tracking-[-0.02em] tabular-nums ${b.txt}`}>${b.v}</span>
                 </div>
-                <div className="mt-2 h-3 rounded-full bg-lp-text/[0.07]">
-                  <div className={`h-full rounded-full ${b.cls}`} style={{ width: `${(b.v / 140) * 100}%` }} />
+                <div className="mt-2.5 grid grid-cols-5 gap-1.5">
+                  {Array.from({ length: CELLS }, (_, c) => {
+                    const f = Math.max(0, Math.min(1, b.v / MONTH - c));
+                    return (
+                      <div key={c} className="relative h-3.5 overflow-hidden rounded-[4px] bg-lp-text/[0.07]">
+                        {f > 0 && <div className={`absolute inset-y-0 left-0 w-full origin-left scale-x-0 transition-transform ease-linear group-data-[seen]/rv:[transform:scaleX(var(--f))] motion-reduce:[transform:scaleX(var(--f))] motion-reduce:transition-none ${b.fill}`}
+                          style={{ ["--f" as string]: f, transitionDuration: `${Math.round(f * 220)}ms`, transitionDelay: `${b.start + c * 220}ms` }} />}
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             ))}
-          </figure>
+            <div aria-hidden className="mt-2 grid grid-cols-5 gap-1.5 text-right text-[12px] tabular-nums text-lp-muted">
+              {Array.from({ length: CELLS }, (_, c) => <span key={c}>${MONTH * (c + 1)}</span>)}
+            </div>
+          </Reveal>
         </div>
       </Container>
     </section>

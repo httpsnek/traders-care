@@ -59,6 +59,11 @@ function Field({ from, to, lit, months, className = "" }: { from: number; to: nu
   return (
     <div className={className}>
       <svg viewBox={`0 0 ${w} ${H}`} className="block w-full" aria-hidden>
+        {/* Август — едва заметной полосой: месяцы читаются без лишних линий */}
+        {MONTH_AT[1] < to && MONTH_AT[2] > from && (
+          <rect x={(Math.max(MONTH_AT[1], from) - from) * STEP} y={0} width={(Math.min(MONTH_AT[2], to) - Math.max(MONTH_AT[1], from)) * STEP} height={H}
+            rx={3} fill="rgb(var(--lp-text) / 0.03)" />
+        )}
         {TRADES.filter((tr) => tr.day >= from && tr.day < to).map((tr) => {
           const on = lit.has(tr.i);
           return (
@@ -67,7 +72,7 @@ function Field({ from, to, lit, months, className = "" }: { from: number; to: nu
               // Появление: колонка за колонкой (день за днём) снизу вверх, когда поле попало в кадр (Reveal выше).
               className="translate-y-[6px] opacity-0 [transform-box:fill-box] group-data-[seen]/rv:translate-y-0 group-data-[seen]/rv:opacity-100 motion-reduce:translate-y-0 motion-reduce:opacity-100"
               style={{
-                fill: on ? (tr.win ? "rgb(var(--lp-profit))" : "rgb(var(--lp-loss))") : "rgb(var(--lp-text) / 0.14)",
+                fill: on ? (tr.win ? "rgb(var(--lp-profit))" : "rgb(var(--lp-loss))") : "rgb(var(--lp-text) / 0.075)",
                 transition: `fill 320ms var(--lp-ease), opacity 420ms var(--lp-ease) ${(tr.day - from) * 12 + tr.slot * 35}ms, transform 520ms var(--lp-ease) ${(tr.day - from) * 12 + tr.slot * 35}ms`,
               }} />
           );
@@ -133,6 +138,11 @@ export function AiAssistant({ t }: { t: Dictionary["ai"] }) {
 
           {/* График-иллюстрация на всю ширину */}
           <Reveal as="figure" amount={0.35} className="mt-12 lg:mt-16" aria-label={t.fieldLabel}>
+            {/* Что сейчас подсвечено — подпись активной сноски прямо над графиком */}
+            <div key={`${q}-${ref}`} className="phone-swap mb-4 flex items-center gap-2.5 text-[14px] text-lp-text">
+              <span className="inline-flex size-[20px] items-center justify-center rounded-[5px] bg-lp-accent font-mono text-[12px] text-lp-on-accent">{ref + 1}</span>
+              {qa.notes[ref]}
+            </div>
             <Field from={0} to={DAYS} lit={lit} months={t.months} className="hidden sm:block" />
             <div className="grid gap-5 sm:hidden">
               <Field from={0} to={DAYS / 2} lit={lit} months={t.months} />

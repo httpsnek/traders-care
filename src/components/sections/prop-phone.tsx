@@ -2,7 +2,9 @@
 
 import { BarChart3, BookOpen, LayoutDashboard, Plus, Wallet } from "lucide-react";
 import Image from "next/image";
-import { useLayoutEffect, useRef, useState } from "react";
+import { useInView } from "motion/react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { CountUp } from "@/components/ui/reveal";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n";
 import type { GaugeKind } from "./prop-gauge";
@@ -70,6 +72,13 @@ export function PropPhone({ rules, active, account, t, locale }: {
   const lit = HIGHLIGHT[active];
   const box = useRef<HTMLDivElement>(null);
   const [transform, setTransform] = useState<string | null>(null);
+  // Появление: дни месяца проявляются по очереди, итог набегает, полоса правила растёт. После — обычная реакция на выбор.
+  const inView = useInView(box, { once: true, amount: 0.4 });
+  const [still, setStill] = useState(false);
+  const [settled, setSettled] = useState(false);
+  useEffect(() => { setStill(matchMedia("(prefers-reduced-motion: reduce)").matches); }, []);
+  const seen = inView || still;
+  useEffect(() => { if (!seen) return; const id = window.setTimeout(() => setSettled(true), 1800); return () => clearTimeout(id); }, [seen]);
 
   useLayoutEffect(() => {
     const el = box.current;
@@ -120,15 +129,16 @@ export function PropPhone({ rules, active, account, t, locale }: {
             {/* Календарь месяца: P&L по дням; выбранное правило подсвечивает свои дни */}
             <div className="mx-[16px] mt-[16px] flex items-baseline justify-between">
               <span className="font-display text-[23px] font-semibold tracking-[-0.01em]">{t.month}</span>
-              <span className="font-display text-[22px] font-medium text-lp-profit tabular-nums">+${nf.format(total).replace(/\s/g, "\u00A0")}</span>
+              <span className="font-display text-[22px] font-medium text-lp-profit tabular-nums"><CountUp to={total} start={seen} duration={1.6} delay={0.3} format={(n) => `+$${nf.format(Math.round(n)).replace(/\s/g, "\u00A0")}`} /></span>
             </div>
             <div className="mx-[16px] mt-[10px] grid grid-cols-5 gap-[6px]">
               {t.weekdays.map((w) => <div key={w} className="pb-[2px] text-center text-[13px] text-lp-muted">{w}</div>)}
-              {CAL.map((c) => {
+              {CAL.map((c, idx) => {
                 const on = lit(c);
                 const tone = c.v === null ? "bg-lp-text/[0.04] text-lp-muted" : c.v < 0 ? "bg-lp-loss/[0.16] text-lp-loss" : "bg-lp-profit/[0.16] text-lp-profit";
                 return (
-                  <div key={c.d} className={`relative flex h-[60px] flex-col justify-between rounded-[11px] px-[7px] py-[6px] transition-opacity duration-300 ${tone} ${on ? "opacity-100 ring-2 ring-lp-accent" : "opacity-40"}`}>
+                  <div key={c.d} style={{ transitionDelay: settled ? undefined : `${idx * 45}ms` }}
+                    className={`relative flex h-[60px] flex-col justify-between rounded-[11px] px-[7px] py-[6px] transition-[opacity,transform] duration-300 ${settled ? "" : "duration-500"} ${tone} ${!seen ? "translate-y-2 opacity-0" : on ? "opacity-100 ring-2 ring-lp-accent" : "opacity-40"}`}>
                     <span className="text-[13px] text-lp-text-2">{c.d}</span>
                     <span className="text-right text-[16px] font-semibold leading-none tabular-nums">{c.v === null ? "·" : short(c.v)}</span>
                   </div>
@@ -147,7 +157,7 @@ export function PropPhone({ rules, active, account, t, locale }: {
               </div>
               <div key={`r${active}`} className="phone-swap mt-[6px] font-display text-[40px] font-medium leading-none tracking-[-0.03em] tabular-nums">{main.readout}</div>
               <div className="mt-[10px] h-[6px] overflow-hidden rounded-full bg-lp-text/10">
-                <div className={`h-full rounded-full transition-[width] duration-700 ease-lp ${toneBar[main.kind]}`} style={{ width: `${main.percent}%` }} />
+                <div className={`h-full rounded-full transition-[width] duration-700 ease-lp ${toneBar[main.kind]}`} style={{ width: seen ? `${main.percent}%` : "0%", transitionDelay: settled ? undefined : "900ms" }} />
               </div>
             </div>
 

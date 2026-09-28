@@ -54,7 +54,7 @@ const HATCH = Array.from({ length: 17 }, (_, i) => {
 });
 // Метка конца шкалы — под цифрой «100».
 const [MK_X, MK_Y0] = pt(100, R_LABEL);
-const MK_Y = round(MK_Y0 + 3.4);
+const MK_Y = round(MK_Y0 + 4.4); // ниже «100» с зазором — не наезжает на цифру
 
 export type GaugeProps = {
   percent: number;
@@ -106,10 +106,14 @@ export function PropGauge({ percent, kind, readoutValue, format, caption, verdic
       });
       return () => stop();
     }
+    // Самотест мог прерваться (прибор ушёл из кадра посреди разгона) — тогда цифра застряла на промежуточном
+    // значении. Всегда досчитываем её до честного и помечаем прибор «успокоенным».
     testing.current = false;
+    if (settledAt.current === null) settledAt.current = performance.now();
     wake(); // при смене правила прибор снова немного «дышит» и успокаивается
     const c = animate(pos, percent, SPRING);
-    return () => c.stop();
+    const n = base.get() !== readoutValue ? animate(base, readoutValue, { duration: 0.9, ease: [0.16, 1, 0.3, 1] }) : null;
+    return () => { c.stop(); n?.stop(); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [percent, inView, reduce]);
 
@@ -253,9 +257,10 @@ export function PropGauge({ percent, kind, readoutValue, format, caption, verdic
       {/* Показания в центре */}
       <div className="pointer-events-none absolute inset-[16.35%] flex flex-col items-center text-center [container-type:inline-size]" aria-hidden>
         <span className="mt-[21%] text-[clamp(9px,3.3cqw,12px)] text-lp-muted">{account}</span>
-        <div className="mb-[13%] mt-auto flex flex-col items-center">
+        <div className="mb-[18%] mt-auto flex flex-col items-center">
           <span ref={numRef} className="font-display text-[14cqw] font-medium leading-none tracking-[-0.04em] text-lp-text tabular-nums">{initialText}</span>
-          <span className="mt-[3%] text-[clamp(10px,3.8cqw,15px)] text-lp-text-2">{caption}</span>
+          {/* Блок показаний поднят (mb 18 %): подпись идёт над уровнем «0» и «100», вердикт — между ними */}
+          <span className="mt-[3%] max-w-[70%] text-balance text-[clamp(10px,3.6cqw,14px)] leading-tight text-lp-text-2">{caption}</span>
           <span className={`mt-[5%] text-[clamp(9px,3.2cqw,13px)] font-semibold tracking-[0.06em] transition-colors duration-500 ${TONE_TEXT[kind]}`}>{verdict}</span>
         </div>
       </div>

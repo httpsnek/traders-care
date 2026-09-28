@@ -81,7 +81,17 @@ html[data-tt="sweep"]::view-transition-new(root) {
 /* Экран телефона: смена правила */
 @layer components {
   .phone-swap { animation: phone-swap 420ms var(--lp-ease) both; }
+  /* Экран iPad: при показе/смене раздела блоки экрана появляются каскадом, полосы [data-grow] растут от нуля */
+  .screen-in > * > * { animation: phone-swap 460ms var(--lp-ease) both; }
+  .screen-in > * > *:nth-child(2) { animation-delay: 50ms; }
+  .screen-in > * > *:nth-child(3) { animation-delay: 100ms; }
+  .screen-in > * > *:nth-child(4) { animation-delay: 150ms; }
+  .screen-in > * > *:nth-child(5) { animation-delay: 200ms; }
+  .screen-in > * > *:nth-child(n + 6) { animation-delay: 250ms; }
+  .screen-in [data-grow] { transform-origin: left; animation: grow-x 700ms var(--lp-ease) 220ms both; }
 }
+@keyframes grow-x { from { transform: scaleX(0); } to { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .screen-in > * > *, .screen-in [data-grow] { animation: none; } }
 @keyframes phone-swap { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 
 /* Чек (блок «Как это работает»): строки «печатаются» сверху вниз, каждая со своей задержкой --d. */
