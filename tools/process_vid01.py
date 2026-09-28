@@ -9,7 +9,7 @@ THEME = sys.argv[1] if len(sys.argv) > 1 else "dark"
 
 CFG = {
     "dark": ("assets/raw/VID-01_lid_veo31_topaz.mp4", "public/media/hero/lid", 1.35, 6.5),
-    "light": ("assets/raw/VID-01_lid_light_veo31_topaz.mp4", "public/media/hero/lid-light", 1.4, 6.1),
+    "light": ("assets/raw/VID-01_lid_light_veo31_topaz.mp4", "public/media/hero/lid-light", 0.6, 6.1),
 }
 SRC, OUT, T0, T1 = CFG[THEME]
 OW, OUT_M, MW = 1920, OUT + "-m", 960

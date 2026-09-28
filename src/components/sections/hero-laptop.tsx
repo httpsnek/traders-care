@@ -268,7 +268,9 @@ export function HeroLaptop({ t, children }: { t: Dictionary["hero"]["visual"]; c
               {/* Экран: интерфейс «включается», когда крышка встала */}
               <div aria-hidden className="absolute left-0 top-0 origin-top-left"
                 style={{ width: SCREEN_W, height: SCREEN_H, transform: quad ?? undefined, visibility: quad ? "visible" : "hidden" }}>
-                <div className={`relative size-full transition-opacity ease-out ${on ? "opacity-100 duration-700" : "opacity-0 duration-300"}`}>
+                {/* Светлая тема: в кадре на верхней рамке экрана засветка от студийного света — закрываем рамку чёрным
+                    кольцом (ширина рамки ~13 px кадра = 13 ед. экрана), как у настоящего чёрного безеля. */}
+                <div className={`relative size-full rounded-t-[6px] transition-opacity ease-out [[data-theme=light]_&]:shadow-[0_0_0_13px_#070708] ${on ? "opacity-100 duration-700" : "opacity-0 duration-300"}`}>
                   <LaptopScreen t={t} p={p} onReplay={play} compact={compact} />
                   {/* Блик студийного света на стекле — только в тёмной теме: на светлом интерфейсе он выглядит как засветка */}
                   <div className="pointer-events-none absolute inset-0 rounded-t-[6px] bg-[radial-gradient(70%_45%_at_50%_0%,rgb(255_255_255/0.06),transparent_70%)] [[data-theme=light]_&]:hidden" />
