@@ -1,6 +1,7 @@
 "use client";
 
 import { Fragment, useState } from "react";
+import { Reveal } from "@/components/ui/reveal";
 import type { Dictionary } from "@/i18n";
 import { Container } from "@/components/ui/container";
 import { DAYS, MAX_PER_DAY, SUBSETS, TRADES } from "./ai-trades";
@@ -63,9 +64,11 @@ function Field({ from, to, lit, months, className = "" }: { from: number; to: nu
           return (
             <rect key={tr.i} x={(tr.day - from) * STEP + (STEP - SIZE) / 2} y={H - 2 - (tr.slot + 1) * STEP_Y + (STEP_Y - SIZE) / 2}
               width={SIZE} height={SIZE} rx={RX}
+              // Появление: колонка за колонкой (день за днём) снизу вверх, когда поле попало в кадр (Reveal выше).
+              className="translate-y-[6px] opacity-0 [transform-box:fill-box] group-data-[seen]/rv:translate-y-0 group-data-[seen]/rv:opacity-100 motion-reduce:translate-y-0 motion-reduce:opacity-100"
               style={{
                 fill: on ? (tr.win ? "rgb(var(--lp-profit))" : "rgb(var(--lp-loss))") : "rgb(var(--lp-text) / 0.14)",
-                transition: "fill 320ms var(--lp-ease)",
+                transition: `fill 320ms var(--lp-ease), opacity 420ms var(--lp-ease) ${(tr.day - from) * 12 + tr.slot * 35}ms, transform 520ms var(--lp-ease) ${(tr.day - from) * 12 + tr.slot * 35}ms`,
               }} />
           );
         })}
@@ -129,7 +132,7 @@ export function AiAssistant({ t }: { t: Dictionary["ai"] }) {
           </div>
 
           {/* График-иллюстрация на всю ширину */}
-          <figure className="mt-12 lg:mt-16" aria-label={t.fieldLabel}>
+          <Reveal as="figure" amount={0.35} className="mt-12 lg:mt-16" aria-label={t.fieldLabel}>
             <Field from={0} to={DAYS} lit={lit} months={t.months} className="hidden sm:block" />
             <div className="grid gap-5 sm:hidden">
               <Field from={0} to={DAYS / 2} lit={lit} months={t.months} />
@@ -142,7 +145,7 @@ export function AiAssistant({ t }: { t: Dictionary["ai"] }) {
                 <span className="flex items-center gap-1.5"><span className="size-[9px] rounded-[2px] bg-lp-loss" />{t.loss}</span>
               </span>
             </figcaption>
-          </figure>
+          </Reveal>
 
           {/* Сноски — как в печатном тексте, под тонкой линией */}
           <ol className="mt-10 grid gap-x-8 gap-y-1 border-t border-lp-line pt-5 sm:grid-cols-3">

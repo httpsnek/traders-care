@@ -8,6 +8,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n";
 import { Container } from "@/components/ui/container";
+import { CountUp, Typed } from "@/components/ui/reveal";
 
 // Блок 4 «Как это работает» (docs/LANDING-SPEC.md, часть C). Ряд 1 — три шага с фрагментами интерфейса.
 // Ряд 2 — чек IMG-04: строки печатает код моноширинным шрифтом поверх плоской части бумаги, рядом итоговая сумма.
@@ -68,9 +69,10 @@ export function HowItWorks({ t, locale }: { t: Dictionary["how"]; locale: Locale
 
         {/* Ряд 1 — шаги. На десктопе соединены линией на уровне номеров, на мобильном — вертикальной слева. */}
         <ol ref={stepsRef} className="relative mt-9 grid gap-8 border-l border-lp-line pl-5 md:mt-12 md:grid-cols-3 md:gap-6 md:border-l-0 md:pl-0 lg:mt-16">
-          <span aria-hidden className="absolute inset-x-0 top-[28px] hidden h-px bg-lp-line md:block" />
+          <span aria-hidden className={`absolute inset-x-0 top-[28px] hidden h-px origin-left bg-lp-line transition-transform duration-[1400ms] ease-lp motion-reduce:scale-x-100 motion-reduce:transition-none md:block ${stepsSeen ? "scale-x-100" : "scale-x-0"}`} />
           {t.steps.map((s, i) => (
-            <li key={i} className="relative flex flex-col">
+            <li key={i} style={{ transitionDelay: `${i * 160}ms` }}
+              className={`relative flex flex-col transition-[opacity,transform] duration-700 ease-lp motion-reduce:translate-y-0 motion-reduce:opacity-100 motion-reduce:transition-none ${stepsSeen ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"}`}>
               <span className="relative inline-flex w-fit bg-lp-ground pr-5 font-display text-[34px] font-medium leading-none md:text-[56px] tracking-[-0.04em] text-lp-muted tabular-nums">{i + 1}</span>
               <h3 className="mt-3 text-lp-h3 text-lp-text md:mt-6">{s.title}</h3>
               <p className="mt-2 max-w-[36ch] text-lp-body text-lp-text-2">{s.text}</p>
@@ -78,9 +80,9 @@ export function HowItWorks({ t, locale }: { t: Dictionary["how"]; locale: Locale
               <div aria-hidden className="mt-4 rounded-screen border border-lp-line bg-lp-raised p-4 text-[13px] md:mt-6">
                 {i === 0 && (
                   <div className="grid gap-2">
-                    {[[t.form.server, "Broker-Live 07"], [t.form.login, "5102 3381"], [t.form.password, "••••••••••"]].map(([k, v]) => (
+                    {[[t.form.server, "Broker-Live 07"], [t.form.login, "5102 3381"], [t.form.password, "••••••••••"]].map(([k, v], j) => (
                       <div key={k} className="flex items-center justify-between gap-3 rounded-control border border-lp-line px-3 py-2">
-                        <span className="text-lp-muted">{k}</span><span className="font-mono text-lp-text">{v}</span>
+                        <span className="text-lp-muted">{k}</span><span className="font-mono text-lp-text"><Typed text={v} start={stepsSeen} delay={500 + j * 650} step={j === 2 ? 45 : 55} /></span>
                       </div>
                     ))}
                     <div className="mt-1 flex items-center gap-2 text-lp-text-2">
@@ -105,7 +107,7 @@ export function HowItWorks({ t, locale }: { t: Dictionary["how"]; locale: Locale
                       <span className="block text-lp-text">{t.mistake.name}</span>
                       <span className="block text-lp-muted">{t.mistake.times}</span>
                     </span>
-                    <span className="font-display text-[20px] font-medium tracking-[-0.02em] text-lp-loss tabular-nums">{usd(640)}</span>
+                    <span className="font-display text-[20px] font-medium tracking-[-0.02em] text-lp-loss tabular-nums"><CountUp to={640} start={synced} format={(n) => usd(Math.round(n))} delay={0.5} /></span>
                   </div>
                 )}
               </div>

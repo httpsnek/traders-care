@@ -1,7 +1,9 @@
 "use client";
 
 import { Check, Link2 } from "lucide-react";
-import { useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useInView } from "motion/react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { CountUp } from "@/components/ui/reveal";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n";
 import { makeFormat } from "@/lib/format";
@@ -27,6 +29,8 @@ const CANDLES = (() => {
 const ENTRY_I = 5, EXIT_I = 15, ENTRY = 4031.4, EXIT = 4047.9;
 
 function Chart({ t, f }: { t: T; f: ReturnType<typeof makeFormat> }) {
+  // Появление (группа rv — карточка в кадре): свечи слева направо, затем зона сделки от входа к выходу, затем метки.
+  const STEP_MS = 55, after = CANDLES.length * STEP_MS;
   const W = 640, H = 220, PX = 18, PY = 26;
   const lo = Math.min(...CANDLES.map((c) => c.l), ENTRY) - 0.8, hi = Math.max(...CANDLES.map((c) => c.h), EXIT) + 0.8;
   const y = (v: number) => +(PY + (1 - (v - lo) / (hi - lo)) * (H - PY * 2)).toFixed(2);
@@ -36,18 +40,22 @@ function Chart({ t, f }: { t: T; f: ReturnType<typeof makeFormat> }) {
   return (
     <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label={t.chartAria}>
       {[0.25, 0.5, 0.75].map((k) => <line key={k} x1="0" x2={W} y1={PY + k * (H - PY * 2)} y2={PY + k * (H - PY * 2)} stroke="rgb(var(--lp-line))" />)}
-      <rect x={x(ENTRY_I)} y={y(EXIT)} width={x(EXIT_I) - x(ENTRY_I)} height={y(ENTRY) - y(EXIT)} fill="rgb(var(--lp-accent) / 0.07)" />
+      <rect x={x(ENTRY_I)} y={y(EXIT)} width={x(EXIT_I) - x(ENTRY_I)} height={y(ENTRY) - y(EXIT)} fill="rgb(var(--lp-accent) / 0.07)"
+        className={`origin-left scale-x-0 [transform-box:fill-box] duration-[900ms] transition-[opacity,transform] ease-lp motion-reduce:transition-none group-data-[seen]/rv:scale-x-100 motion-reduce:scale-x-100`}
+        style={{ transitionDelay: `${ENTRY_I * STEP_MS + 150}ms` }} />
       {CANDLES.map((c, i) => {
         const up = c.c >= c.o;
         const top = y(Math.max(c.o, c.c)), bot = y(Math.min(c.o, c.c));
         return (
-          <g key={i}>
+          <g key={i} className={`translate-y-1.5 opacity-0 duration-500 transition-[opacity,transform] ease-lp motion-reduce:transition-none group-data-[seen]/rv:translate-y-0 group-data-[seen]/rv:opacity-100 motion-reduce:translate-y-0 motion-reduce:opacity-100`}
+            style={{ transitionDelay: `${i * STEP_MS}ms` }}>
             <line x1={x(i)} x2={x(i)} y1={y(c.h)} y2={y(c.l)} stroke={ink} strokeWidth="1.2" />
             <rect x={x(i) - 7} width="14" y={top} height={Math.max(2, bot - top)} rx="1.5"
               fill={up ? "rgb(var(--lp-raised))" : ink} stroke={ink} strokeWidth="1.2" />
           </g>
         );
       })}
+      <g className={`opacity-0 duration-500 transition-[opacity,transform] ease-lp motion-reduce:transition-none group-data-[seen]/rv:opacity-100 motion-reduce:opacity-100`} style={{ transitionDelay: `${after}ms` }}>
       <line x1={x(ENTRY_I)} x2={x(EXIT_I)} y1={y(ENTRY)} y2={y(ENTRY)} stroke="rgb(var(--lp-accent))" strokeDasharray="4 4" strokeWidth="1.4" />
       <line x1={x(EXIT_I)} x2={x(EXIT_I)} y1={y(ENTRY)} y2={y(EXIT)} stroke="rgb(var(--lp-accent))" strokeDasharray="4 4" strokeWidth="1.4" />
       <circle cx={x(ENTRY_I)} cy={y(ENTRY)} r="4.5" fill="rgb(var(--lp-accent))" />
@@ -55,6 +63,7 @@ function Chart({ t, f }: { t: T; f: ReturnType<typeof makeFormat> }) {
       {/* «Вход» — слева над пунктиром: свечи до входа ниже цены входа, место свободно */}
       <text x={x(ENTRY_I) - 12} y={y(ENTRY) - 10} fontSize="12" textAnchor="end" fill="rgb(var(--lp-muted))">{t.entry} {f.price(ENTRY)}</text>
       <text x={x(EXIT_I)} y={y(EXIT) - 14} fontSize="12" textAnchor="middle" fill="rgb(var(--lp-muted))">{t.exit} {f.price(EXIT)}</text>
+      </g>
     </svg>
   );
 }
@@ -83,6 +92,10 @@ export function VerifyProof({ t, locale }: { t: T; locale: Locale }) {
   const table = useRef<HTMLDivElement>(null);
   const [segs, setSegs] = useState<Seg[]>([]);
   const [hot, setHot] = useState<number | null>(null);
+  const inView = useInView(box, { once: true, amount: 0.3 });
+  const [still, setStill] = useState(false);
+  useEffect(() => setStill(matchMedia("(prefers-reduced-motion: reduce)").matches), []);
+  const seen = inView || still;
 
   const cardValues = [
     { label: t.volume, value: `${f.price(0.5)} ${t.lot}` },
@@ -126,7 +139,7 @@ export function VerifyProof({ t, locale }: { t: T; locale: Locale }) {
 
   return (
     <div className="grid gap-12 lg:grid-cols-12 lg:gap-6">
-      <div ref={box} className="relative min-w-0 lg:col-span-8">
+      <div ref={box} data-seen={seen ? "" : undefined} className="group/rv relative min-w-0 lg:col-span-8">
         {/* Публичная карточка — как ею делятся */}
         <figure className="rounded-screen border border-lp-line bg-lp-raised">
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-lp-line px-5 py-3 sm:px-7">
@@ -149,7 +162,7 @@ export function VerifyProof({ t, locale }: { t: T; locale: Locale }) {
                 </div>
                 <div className="mt-1 text-[13px] text-lp-muted">{t.date}</div>
               </div>
-              <div className="font-display text-[44px] font-medium leading-none tracking-[-0.035em] text-lp-profit tabular-nums">+2.4R</div>
+              <div className="font-display text-[44px] font-medium leading-none tracking-[-0.035em] text-lp-profit tabular-nums"><CountUp to={2.4} start={seen} format={(n) => `+${n.toFixed(1)}R`} duration={1.4} delay={0.9} /></div>
             </div>
             <div className="mt-4"><Chart t={t} f={f} /></div>
           </div>
@@ -169,7 +182,8 @@ export function VerifyProof({ t, locale }: { t: T; locale: Locale }) {
         <svg aria-hidden className="pointer-events-none absolute inset-0 hidden h-full w-full overflow-visible lg:block">
           {segs.map((s, i) => (
             <g key={i} style={{ opacity: dim(i) ? 0.15 : 1, transition: "opacity 200ms" }}>
-              <path d={s.d} fill="none" stroke="rgb(var(--lp-accent))" strokeWidth="1.2" />
+              <path d={s.d} fill="none" stroke="rgb(var(--lp-accent))" strokeWidth="1.2" pathLength={1} strokeDasharray="1"
+                style={{ strokeDashoffset: seen ? 0 : 1, transition: `stroke-dashoffset 900ms var(--lp-ease) ${1500 + i * 120}ms` }} />
               <circle cx={s.sx} cy={s.sy} r="3" fill="rgb(var(--lp-accent))" />
               <circle cx={s.ex} cy={s.ey} r="3" fill="rgb(var(--lp-accent))" />
             </g>

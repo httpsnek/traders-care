@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { Reveal } from "@/components/ui/reveal";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n";
 import { Container } from "@/components/ui/container";
@@ -60,12 +61,12 @@ export function Verify({ t, locale }: { t: Dictionary["verify"]; locale: Locale 
 
         {/* Схема пути данных — десктоп. Всё в одной системе координат (высота контейнера = высота картинки),
             каждая линия — один сплошной отрезок от подписи до ключа, без стыков. */}
-        <figure aria-label={d.aria} className="relative mt-16 hidden aspect-[3.748/1] lg:block">
-          <div className={`absolute inset-y-0 ${fade}`} style={{ left: `${IMG.left}%`, width: `${IMG.width}%` }}>{keyImg}</div>
+        <Reveal as="figure" amount={0.45} aria-label={d.aria} className="relative mt-16 hidden aspect-[3.748/1] lg:block">
+          <div className={`absolute inset-y-0 ${fade} -translate-x-6 opacity-0 transition-[opacity,transform] duration-700 ease-lp motion-reduce:transition-none group-data-[seen]/rv:opacity-100 motion-reduce:opacity-100 group-data-[seen]/rv:translate-x-0 motion-reduce:translate-x-0`} style={{ transitionDelay: "250ms", left: `${IMG.left}%`, width: `${IMG.width}%` }}>{keyImg}</div>
 
           <div aria-hidden className="pointer-events-none absolute inset-0">
             {/* Брокер → головка ключа. Зеркально правой стороне: точка, короткая линия, подпись выровнена вправо к точке. */}
-            <div className="absolute -mt-[15px] text-right" style={{ top: `${KEY.inY}%`, right: `${100 - BROKER_AT}%` }}>
+            <div className="absolute -mt-[15px] text-right opacity-0 transition-[opacity,transform] duration-700 ease-lp motion-reduce:transition-none group-data-[seen]/rv:opacity-100 motion-reduce:opacity-100" style={{ top: `${KEY.inY}%`, right: `${100 - BROKER_AT}%` }}>
               <div className="flex h-[30px] items-center justify-end gap-3">
                 <span className="whitespace-nowrap font-display text-[20px] font-medium tracking-[-0.01em] text-lp-text">{d.broker}</span>
                 <span className="-mr-[4.5px] size-[9px] shrink-0 rounded-full bg-lp-accent" />
@@ -74,11 +75,11 @@ export function Verify({ t, locale }: { t: Dictionary["verify"]; locale: Locale 
                 {d.brokerSub.split(/,\s*/).map((x) => <span key={x} className="whitespace-nowrap">{x}</span>)}
               </div>
             </div>
-            <span className="absolute h-[1.5px] bg-lp-accent" style={{ top: `${KEY.inY}%`, left: `${BROKER_AT}%`, width: `${at(KEY.inX) - BROKER_AT}%` }} />
+            <span className="absolute h-[1.5px] bg-lp-accent origin-left scale-x-0 transition-[opacity,transform] duration-700 ease-lp motion-reduce:transition-none group-data-[seen]/rv:scale-x-100 motion-reduce:scale-x-100" style={{ transitionDelay: "150ms", top: `${KEY.inY}%`, left: `${BROKER_AT}%`, width: `${at(KEY.inX) - BROKER_AT}%` }} />
 
             {/* Кончик ключа → Traders Care */}
-            <span className="absolute h-[1.5px] bg-lp-accent" style={{ top: `${KEY.outY}%`, left: `${at(KEY.outX)}%`, width: `${APP_AT - at(KEY.outX)}%` }} />
-            <div className="absolute -mt-[15px]" style={{ top: `${KEY.outY}%`, left: `${APP_AT}%` }}>
+            <span className="absolute h-[1.5px] bg-lp-accent origin-left scale-x-0 transition-[opacity,transform] duration-700 ease-lp motion-reduce:transition-none group-data-[seen]/rv:scale-x-100 motion-reduce:scale-x-100" style={{ transitionDelay: "900ms", top: `${KEY.outY}%`, left: `${at(KEY.outX)}%`, width: `${APP_AT - at(KEY.outX)}%` }} />
+            <div className="absolute -mt-[15px] opacity-0 transition-[opacity,transform] duration-700 ease-lp motion-reduce:transition-none group-data-[seen]/rv:opacity-100 motion-reduce:opacity-100" style={{ transitionDelay: "1250ms", top: `${KEY.outY}%`, left: `${APP_AT}%` }}>
               <div className="flex h-[30px] items-center gap-3">
                 <span className="-ml-[4.5px] size-[9px] shrink-0 rounded-full bg-lp-accent" />
                 <span className="whitespace-nowrap font-display text-[20px] font-medium tracking-[-0.01em] text-lp-text">{d.app}</span>
@@ -91,39 +92,39 @@ export function Verify({ t, locale }: { t: Dictionary["verify"]; locale: Locale 
 
             {/* От бородки вверх — недоступные действия */}
             {[56, 78].map((xPct, k) => (
-              <span key={xPct} className="absolute w-0 border-l border-dashed border-lp-text/35" style={{ left: `${at(xPct)}%`, top: "2%", height: `${KEY.bladeTop - 2}%` }}>
+              <span key={xPct} className="absolute w-0 border-l border-dashed border-lp-text/35 translate-y-2 opacity-0 transition-[opacity,transform] duration-700 ease-lp motion-reduce:transition-none group-data-[seen]/rv:translate-y-0 group-data-[seen]/rv:opacity-100 motion-reduce:translate-y-0 motion-reduce:opacity-100" style={{ transitionDelay: `${1100 + k * 150}ms`, left: `${at(xPct)}%`, top: "2%", height: `${KEY.bladeTop - 2}%` }}>
                 <span className={`absolute -top-2 -translate-y-full ${k === 0 ? "right-0 translate-x-3" : "left-0 -translate-x-3"}`}>{struck(blocked[k])}</span>
               </span>
             ))}
 
-            <span className="absolute -translate-x-1/2 text-center" style={{ top: "80%", left: `${at(50)}%` }}>
+            <span className="absolute -translate-x-1/2 text-center opacity-0 transition-[opacity,transform] duration-700 ease-lp motion-reduce:transition-none group-data-[seen]/rv:opacity-100 motion-reduce:opacity-100" style={{ transitionDelay: "700ms", top: "80%", left: `${at(50)}%` }}>
               <span className="block text-[15px] font-medium text-lp-text">{d.key}</span>
               <span className="block text-[12px] text-lp-muted">{d.keySub}</span>
             </span>
           </div>
-        </figure>
+        </Reveal>
 
         {/* Схема — мобильный и планшет: та же схема, что на десктопе, но вертикально и по центру.
             Ключ повёрнут на 90° по часовой: головка сверху, кончик снизу, бородка справа. Точки — из тех же замеров KEY,
             пересчитанных в координаты рамки (все % — от ширины/высоты рамки, см. M ниже). */}
-        <figure aria-label={d.aria} className="mx-auto mt-10 w-full max-w-[400px] lg:hidden">
+        <Reveal as="figure" amount={0.35} aria-label={d.aria} className="mx-auto mt-10 w-full max-w-[400px] lg:hidden">
           <div className="text-center">
             <div className="font-display text-[20px] font-medium text-lp-text">{d.broker}</div>
             <div className="mt-1 text-[12px] leading-snug text-lp-muted">MetaTrader · cTrader · Match-Trader · DXtrade</div>
           </div>
           <div aria-hidden className="relative mt-3 w-full" style={{ aspectRatio: `${M.W}/${M.H}` }}>
             {/* Ключ: рамка 44 % ширины, картинка внутри повёрнута */}
-            <div className="absolute" style={{ left: `${M.keyL}%`, top: `${M.keyT}%`, width: `${M.keyW}%`, height: `${M.keyH}%` }}>
+            <div className="absolute -translate-y-4 opacity-0 transition-[opacity,transform] duration-700 ease-lp motion-reduce:transition-none group-data-[seen]/rv:opacity-100 motion-reduce:opacity-100 group-data-[seen]/rv:translate-y-0 motion-reduce:translate-y-0" style={{ transitionDelay: "300ms", left: `${M.keyL}%`, top: `${M.keyT}%`, width: `${M.keyW}%`, height: `${M.keyH}%` }}>
               <div className={`absolute left-1/2 top-1/2 ${fade}`}
                 style={{ width: `${KEY_ASPECT * 100}%`, height: `${100 / KEY_ASPECT}%`, transform: "translate(-50%, -50%) rotate(90deg)" }}>{keyImg}</div>
             </div>
             {/* Брокер → головка */}
-            <span className="absolute w-[1.5px] -translate-x-1/2 bg-lp-accent" style={{ left: `${M.head.x}%`, top: 0, height: `${M.head.y}%` }} />
+            <span className="absolute w-[1.5px] -translate-x-1/2 bg-lp-accent origin-top scale-y-0 transition-[opacity,transform] duration-700 ease-lp motion-reduce:transition-none group-data-[seen]/rv:scale-y-100 motion-reduce:scale-y-100" style={{ transitionDelay: "100ms", left: `${M.head.x}%`, top: 0, height: `${M.head.y}%` }} />
             {/* Кончик → Traders Care */}
-            <span className="absolute w-[1.5px] -translate-x-1/2 bg-lp-accent" style={{ left: `${M.tip.x}%`, top: `${M.tip.y}%`, bottom: 0 }} />
+            <span className="absolute w-[1.5px] -translate-x-1/2 bg-lp-accent origin-top scale-y-0 transition-[opacity,transform] duration-700 ease-lp motion-reduce:transition-none group-data-[seen]/rv:scale-y-100 motion-reduce:scale-y-100" style={{ transitionDelay: "900ms", left: `${M.tip.x}%`, top: `${M.tip.y}%`, bottom: 0 }} />
             {/* От бородки вправо — недоступные действия */}
             {blocked.map((label, k) => (
-              <span key={label} className="absolute flex -translate-y-1/2 items-center" style={{ left: `${M.blade.x}%`, top: `${M.blade.y[k]}%`, right: 0 }}>
+              <span key={label} className="absolute flex -translate-y-1/2 items-center opacity-0 transition-[opacity,transform] duration-700 ease-lp motion-reduce:transition-none group-data-[seen]/rv:opacity-100 motion-reduce:opacity-100" style={{ transitionDelay: `${1100 + k * 150}ms`, left: `${M.blade.x}%`, top: `${M.blade.y[k]}%`, right: 0 }}>
                 <span className="w-[14%] shrink-0 border-t border-dashed border-lp-text/35" />
                 <span className="ml-2 min-w-0 text-[13px] leading-tight text-lp-muted">
                   <span className="block line-through decoration-lp-text/50">{label}</span>
@@ -132,12 +133,12 @@ export function Verify({ t, locale }: { t: Dictionary["verify"]; locale: Locale 
               </span>
             ))}
             {/* Подпись ключа — слева, на уровне бородки */}
-            <span className="absolute -translate-y-1/2 text-right" style={{ left: 0, width: `${M.keyL - 3}%`, top: `${(M.blade.y[0] + M.blade.y[1]) / 2}%` }}>
+            <span className="absolute -translate-y-1/2 text-right opacity-0 transition-[opacity,transform] duration-700 ease-lp motion-reduce:transition-none group-data-[seen]/rv:opacity-100 motion-reduce:opacity-100" style={{ transitionDelay: "700ms", left: 0, width: `${M.keyL - 3}%`, top: `${(M.blade.y[0] + M.blade.y[1]) / 2}%` }}>
               <span className="block text-[14px] font-medium leading-tight text-lp-text">{d.key}</span>
               <span className="mt-1 block text-[11px] leading-snug text-lp-muted">{d.keySub}</span>
             </span>
           </div>
-          <div className="relative flex flex-col" style={{ paddingLeft: `${M.tip.x}%` }}>
+          <div className="relative flex flex-col opacity-0 transition-[opacity,transform] duration-700 ease-lp motion-reduce:transition-none group-data-[seen]/rv:opacity-100 motion-reduce:opacity-100" style={{ transitionDelay: "1250ms", paddingLeft: `${M.tip.x}%` }}>
             <div className="-ml-[4.5px] flex items-center gap-3">
               <span className="size-[9px] shrink-0 rounded-full bg-lp-accent" />
               <span className="font-display text-[20px] font-medium text-lp-text">{d.app}</span>
@@ -146,7 +147,7 @@ export function Verify({ t, locale }: { t: Dictionary["verify"]; locale: Locale 
               <span>{d.journal}</span><span>{d.card}</span>
             </div>
           </div>
-        </figure>
+        </Reveal>
 
         {/* Результаты, которые нельзя нарисовать: публичная карточка ↔ выписка брокера */}
         <div className="mt-16 border-t border-lp-line pt-12 lg:mt-20 lg:pt-16">

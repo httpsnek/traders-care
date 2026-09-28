@@ -1,7 +1,8 @@
 "use client";
 
 import { ArrowRight, ArrowUpRight } from "lucide-react";
-import { useRef, useState } from "react";
+import { animate, useInView } from "motion/react";
+import { useEffect, useRef, useState } from "react";
 import type { Dictionary } from "@/i18n";
 
 // «Бесплатные калькуляторы»: каждый пункт — калькулятор, свёрнутый в строку (входные данные → результат),
@@ -32,25 +33,41 @@ const W = 560, H = 300;
 
 function Scenarios({ t }: { t: T }) {
   const PL = 8, PR = 8, PT = 16, PB = 26;
-  const vals = PATHS.flatMap((p) => p.pts);
-  const lo = FLOOR - 2, hi = Math.max(...vals) + 2;
+  // Прорисовка: k — сколько сделок уже нарисовано (0..N). Масштаб по вертикали считается по видимой части
+  // и плавно отдаляется по мере роста/падения линий; пол просадки всегда в кадре.
+  const ref = useRef<SVGSVGElement>(null);
+  const seen = useInView(ref, { once: true, amount: 0.4 });
+  const [k, setK] = useState(N);
+  useEffect(() => {
+    if (!seen) { if (!matchMedia("(prefers-reduced-motion: reduce)").matches) setK(0); return; }
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) { setK(N); return; }
+    const c = animate(0, N, { duration: 2.6, ease: [0.33, 0, 0.2, 1], onUpdate: setK });
+    return () => c.stop();
+  }, [seen]);
+  const upto = (pts: number[]) => pts.slice(0, Math.floor(k) + 1);
+  const vis = PATHS.flatMap((p) => upto(p.pts));
+  const lo = FLOOR - 2, hi = Math.max(4, ...vis) + 2;
   const x = (i: number) => +(PL + (i / N) * (W - PL - PR)).toFixed(2);
   const y = (v: number) => +(PT + (1 - (v - lo) / (hi - lo)) * (H - PT - PB)).toFixed(2);
   const d = (pts: number[]) => pts.map((v, i) => `${i ? "L" : "M"}${x(i)},${y(v)}`).join("");
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label={t.chartAria}>
+    <svg ref={ref} viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label={t.chartAria}>
       <line x1={PL} x2={W - PR} y1={y(0)} y2={y(0)} stroke="rgb(var(--lp-line))" />
       <line x1={PL} x2={W - PR} y1={y(FLOOR)} y2={y(FLOOR)} stroke="rgb(var(--lp-accent))" strokeDasharray="4 4" />
       <text x={W - PR} y={y(FLOOR) + 16} fontSize="11" textAnchor="end" fill="rgb(var(--lp-accent))">{t.floor}</text>
       {PATHS.filter((p) => !p.hit).map((p, i) => (
-        <path key={`s${i}`} d={d(p.pts)} fill="none" stroke="rgb(var(--lp-text) / 0.28)" strokeWidth="1.2" strokeLinejoin="round" />
+        <path key={`s${i}`} d={d(upto(p.pts))} fill="none" stroke="rgb(var(--lp-text) / 0.28)" strokeWidth="1.2" strokeLinejoin="round" />
       ))}
-      {PATHS.filter((p) => p.hit).map((p, i) => (
-        <g key={`h${i}`}>
-          <path d={d(p.pts)} fill="none" stroke="rgb(var(--lp-loss))" strokeWidth="1.4" strokeLinejoin="round" />
-          <circle cx={x(p.pts.length - 1)} cy={y(FLOOR)} r="3" fill="rgb(var(--lp-loss))" />
-        </g>
-      ))}
+      {PATHS.filter((p) => p.hit).map((p, i) => {
+        const done = k >= p.pts.length - 1;
+        return (
+          <g key={`h${i}`}>
+            <path d={d(upto(p.pts))} fill="none" stroke="rgb(var(--lp-loss))" strokeWidth="1.4" strokeLinejoin="round" />
+            <circle cx={x(p.pts.length - 1)} cy={y(FLOOR)} r="3" fill="rgb(var(--lp-loss))"
+              style={{ opacity: done ? 1 : 0, transform: done ? "scale(1)" : "scale(0)", transformBox: "fill-box", transformOrigin: "center", transition: "opacity 200ms, transform 320ms var(--lp-ease)" }} />
+          </g>
+        );
+      })}
       <text x={PL} y={H - 6} fontSize="11" fill="rgb(var(--lp-muted))">0</text>
       <text x={W - PR} y={H - 6} fontSize="11" textAnchor="end" fill="rgb(var(--lp-muted))">{N} {t.trades}</text>
     </svg>

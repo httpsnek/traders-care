@@ -203,3 +203,6 @@ html[data-tt="lang"]::view-transition-new(root) {
 }
 @keyframes lp-lang-out { to { opacity: 0; filter: blur(6px); } }
 @keyframes lp-lang-in { from { opacity: 0; filter: blur(6px); } }
+
+/* Полоса автопереключения вкладок «Продукта» */
+@keyframes tab-progress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
